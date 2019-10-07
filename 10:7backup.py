@@ -51,6 +51,14 @@ with closing(urllib.request.urlopen("https://www.googleapis.com/webfonts/v1/webf
     fontlist = gfData['items'] # Get actual list of fonts (Google wraps them in a 2-column list for some reason)
 
     for font in fontlist:
+        # Create a tuple to append to gf list
+        # current = {}
+        # current['name'] = font['family']
+        # current['family'] = font['family']
+        # current['category'] = font['category']
+        # current['italic'] = 0 # default is 0: not italic
+        # current['weight'] = 400 # default is regular
+
         # Initialize feature variables
         name = ""
         family = font['family']
@@ -61,41 +69,83 @@ with closing(urllib.request.urlopen("https://www.googleapis.com/webfonts/v1/webf
 
         # Check for font variants
         if len(variants) > 1:
+            # # Get CSS for each variant
+            # # https://fonts.googleapis.com/css?family=Roboto:thin,light,normal,italic,bold,black
+            # varString = str(variants).strip('[]').replace("'","").replace(" ", "")
+            # #print(varString)
+            # url =  "https://fonts.googleapis.com/css?family=" + font['family'] + ":" + varString + "&subset=latin"
+            # #print(url)
             for var in variants:
+                vname = var
                 # Get weight
                 temp = var.split("00")
                 if len(temp) == 1:
                     weight = 400
                 else:
                     weight = int(temp[0])*100
-                print("family: ",family)
                 print("var: ",var)
                 print("temp: ",temp)
                 # print("temp[0]: ",temp[0])
                 print("weight: ",weight)
                 # Get name based on weight (if not regular)
                 if weight == 100:
-                    name = family + " Ultra Light"
+                    vname = var + " Ultra Light"
                 elif weight == 300:
-                    name = family + " Light"
+                    vname = var + " Light"
                 elif weight == 500:
-                    name = family + " Medium"
+                    vname = var + " Medium"
                 elif weight == 700:
-                    name = family + " Bold"
+                    vname = var + " Bold"
                 elif weight == 900:
-                    name = family + " Black"
+                    vname = var + " Black"
                 else:
-                    name = family
-
+                    vname = family
+                print("family: ",family)
                 print("name: ",name)
+                print("vname: ",vname)
                 print("\n")
 
                 # Check if italic
                 if len(temp) > 1 and temp[1] == 'italic':
                     italic = 1
                     name = name + " Italic"
+
+                # # Create tuple and append to list
+                # current = {}
+                # current['name'] = name
+                # current['family'] = family
+                # current['category'] = category
+                # current['italic'] = italic
+                # current['weight'] = weight
+                # gf.append(current)
+
+
+            # urlPrefix = "https://fonts.googleapis.com/css?family=" + font['family'] + ":"
+            # for idx, val in enumerate(variants):
+            #     # Get CSS data for each variant from Google Fonts API
+            #     variantURL = urlPrefix + variants[idx] + "&subset=latin" # might not need subset part
+            #     variantCSS = urllib.request.urlopen(variantURL).read()
+            #     print(variantCSS)
+
+            #     # Get name
+            #     # variantName = src: local('name')
+            #     variantName = font['family'] + " " + val.capitalize()
+            #     current['name'] = variantName
+
+            #     # Check italic
+            #     if variantCSS['font_style'] == 'italic':
+            #         current['italic'] = 1
+
+            #     # Get weight
+            #     current['weight'] = variantCSS['font-weight']
+
+            #     # Add to list
+            #     gf.append(current)
+        # else:
+        #     name = font['family']
+            # current['name'] = font['family']
+            # gf.append(current)
         print("final name: ",name)
-        print("italic: ",italic)
         print("\n")
         # Create tuple to be appended to list
         current = {}
