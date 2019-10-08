@@ -1,49 +1,21 @@
 import json, urllib.request, re
 import pandas as pd
 from contextlib import closing
-# from pprint import pprint
-# from urllib.request import urlopen
-
-# Initialize font lists for both databases
-# col_names =  ['name', 'family', 'category','italic','weight']
-# gf = pd.DataFrame(columns = col_names)
-# fs = pd.DataFrame(columns = col_names)
-gf = []
-fs = []
 
 # font weights:
-# ultra light = 100
+# thin = 100
+# extra light = 200
 # light = 300
 # regular = 400
 # medium = 500
+# semibold = 600
 # bold = 700
+# extra bold = 800
 # black = 900
 
-# Request URLS for databases
-# "https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyAMBY2XP1dQ67L3SX2rOOrZ505Is99Fm40"
-# "http://www.fontsquirrel.com/api/fontlist/all"
-# "https://www.fontsquirrel.com/api/familyinfo/{family}"
-
-# def getVariantName(weight,family,italic):
-#     # Get name based on weight
-#     if weight == 100:
-#         name = family + " Ultra Light"
-#     elif weight == 300:
-#         name = family + " Light"
-#     elif weight == 400:
-#         name = family + " Regular"
-#     elif weight == 500:
-#         name = family + " Medium"
-#     elif weight == 700:
-#         name = family + " Bold"
-#     else weight == 900:
-#         name = family + " Black"
-
-#     # Check for italic
-#     if italic:
-#         name = name + " Italic"
-
-#     return name
+# Initialize font lists for both databases
+gf = []
+fs = []
 
 # Import Google Fonts metadata
 with closing(urllib.request.urlopen("https://www.googleapis.com/webfonts/v1/webfonts?sort=alpha&key=AIzaSyAMBY2XP1dQ67L3SX2rOOrZ505Is99Fm40")) as urlGF:
@@ -59,6 +31,14 @@ with closing(urllib.request.urlopen("https://www.googleapis.com/webfonts/v1/webf
         weight = 400 # default is regular
         variants = font['variants']
 
+        # Create tuple to be appended to list
+        current = {}
+        current['name'] = name
+        current['family'] = family
+        current['category'] = category
+        current['italic'] = italic
+        current['weight'] = weight
+
         # Check for font variants
         if len(variants) > 1:
             for var in variants:
@@ -68,44 +48,36 @@ with closing(urllib.request.urlopen("https://www.googleapis.com/webfonts/v1/webf
                     weight = 400
                 else:
                     weight = int(temp[0])*100
-                print("family: ",family)
-                print("var: ",var)
-                print("temp: ",temp)
-                # print("temp[0]: ",temp[0])
-                print("weight: ",weight)
-                # Get name based on weight (if not regular)
+
+                # Get name based on weight
                 if weight == 100:
-                    name = family + " Ultra Light"
+                    name = family + " Thin"
+                elif weight == 200:
+                    name = family + " ExtraLight"
                 elif weight == 300:
                     name = family + " Light"
                 elif weight == 500:
                     name = family + " Medium"
+                elif weight == 600:
+                    name = family + " SemiBold"
                 elif weight == 700:
                     name = family + " Bold"
+                elif weight == 800:
+                    name = family + " ExtraBold"
                 elif weight == 900:
                     name = family + " Black"
                 else:
-                    name = family
-
-                print("name: ",name)
-                print("\n")
+                    name = family + " Regular"
 
                 # Check if italic
                 if len(temp) > 1 and temp[1] == 'italic':
                     italic = 1
                     name = name + " Italic"
-        print("final name: ",name)
-        print("italic: ",italic)
-        print("\n")
-        # Create tuple to be appended to list
-        current = {}
-        current['name'] = name
-        current['family'] = family
-        current['category'] = category
-        current['italic'] = italic
-        current['weight'] = weight
-        #print(current['name'])
-        gf.append(current)
+
+                # Append to gf list
+                print(name)
+                gf.append(current)
+
 #print(gf)
 # Import Fontsquirrel metadata
 with closing(urllib.request.urlopen("http://www.fontsquirrel.com/api/fontlist/all")) as urlFS:
@@ -152,43 +124,47 @@ with closing(urllib.request.urlopen("http://www.fontsquirrel.com/api/fontlist/al
 
                 # Get variant name
 
-                # Split font style into words based on capital letters
-                styleWords = re.findall('[A-Z][^A-Z]*', font['style_name'])
+                # # Split font style into words based on capital letters
+                # styleWords = re.findall('[A-Z][^A-Z]*', font['style_name'])
 
-                # Change style phrasings to match GF phrasings
+                # # Change style phrasings to match GF phrasings
 
-                # Add a space after all but the last word
-                for i in range(0,len(styleWords)-1):
-                    styleWords[i] = styleWords[i] + " "
+                # # Add a space after all but the last word
+                # for i in range(0,len(styleWords)-1):
+                #     styleWords[i] = styleWords[i] + " "
 
-                # Combine style with family to create variant name
-                name = (family + " ").join(styleWords)
+                # # Combine style with family to create variant name
+                # name = (family + " ").join(styleWords)
+                family = var['family_name']
+                name = family + " " + var['style_name']
+                #print("var: ",var)
+                # Get weight based on name
+                if 'ExtraLight' in name:
+                    weight = 200
+                elif 'SemiBold' in name:
+                    weight = 600
+                elif 'ExtraBold' in name:
+                    weight = 800
+                elif 'Thin' in name:
+                    weight = 100
+                elif 'Light' in name:
+                    weight = 300
+                elif 'Medium' in name:
+                    weight = 500
+                elif 'Bold' in name:
+                    weight = 700
+                elif 'Black' in name:
+                    weight = 900
+                else:
+                    weight = 400
 
-                # Check italic
-                if 'italic' in var['style_name']:
-                    current['italic'] = 1
+                # Check if italic
+                if 'italic' in name:
+                    italic = 1
 
-                # Check weight (default is regular = 400):
-                elif 'UltraLight' in var['style_name'] or 'ExtraLight' in var['style_name']:
-                    current['weight'] = 100
-                elif 'Light' in var['style_name']:
-                    current['weight'] = 300
-                elif 'Bold' in var['style_name']:
-                    current['weight'] = 700
-                elif 'Black' in var['style_name'] or 'ExtraBold' in var['style_name']:
-                    current['weight'] = 900
-
-                # Create tuple and append to list
-                # current['name'] = name
-                # current['family'] = family
-                # current['category'] = category
-                # current['italic'] = italic
-                # current['weight'] = weight
+                # Append to list
+                print("name: ",name)
                 fs.append(current)
-        else:
-            # current['name'] = font['family_name']
-            name = family
-            fs.append(current)
 
 # Convert lists to dataframes
 col_names =  ['name', 'family', 'category','italic','weight']
@@ -199,3 +175,4 @@ print(dfFS)
 
 # Merge dataframes into one, getting rid of duplicates at the same time
 dataset = dfGF.merge(dfFS, left_on='name', right_on='name')
+print(dataset)
