@@ -1,25 +1,45 @@
-# Source: https://towardsdatascience.com/how-to-build-your-own-neural-network-from-scratch-in-python-68998a08e4f6
-
+import json, urllib.request
+import pandas as pd
 import numpy as np
-np.random.seed(42) # for reproducibility
+from contextlib import closing
+from itertools import chain
+from collections import Counter, OrderedDict
 
-class NeuralNetwork:
-    def __init__(self, x, y):
-        self.input      = x
-        self.weights1   = np.random.rand(self.input.shape[1],4)
-        self.weights2   = np.random.rand(4,1)
-        self.y          = y
-        self.output     = np.zeros(self.y.shape)
+# Font categories: serif, sans-serif, display, handwriting, monospace
+# possibly add isbodyText as a category?
 
-    def feedforward(self):
-        self.layer1 = sigmoid(np.dot(self.input, self.weights1))
-        self.output = sigmoid(np.dot(self.layer1, self.weights2))
+# Get helper methods
+from get_googlefonts_data import get_googlefonts_data
 
-    def backprop(self):
-        # application of the chain rule to find derivative of the loss function with respect to weights2 and weights1
-        d_weights2 = np.dot(self.layer1.T, (2*(self.y - self.output) * sigmoid_derivative(self.output)))
-        d_weights1 = np.dot(self.input.T,  (np.dot(2*(self.y - self.output) * sigmoid_derivative(self.output), self.weights2.T) * sigmoid_derivative(self.layer1)))
+# Get preprocessed data from Google Fonts API
+fontWeights = ['Thin','Extra Light','Light','Regular','Medium',
+                'Semi Bold','Bold','Extra Bold','Black']
+# corresponding numerical weights: [100, 200, 300, 400, 500, 600, 700, 800, 900]
+colNames =  ['name', 'family', 'category','italic','weight']
 
-        # update the weights with the derivative (slope) of the loss function
-        self.weights1 += d_weights1
-        self.weights2 += d_weights2
+fonts = get_googlefonts_data(fontWeights,colNames)
+print(fonts.tail(50))
+
+
+
+# create list of all unique words in font names
+# create list of features
+unique_names = []
+is_serif = [0]
+features = ['display', 'body', 'handwriting', 'monospace']
+
+# Need d-dimensional vector; at least 5???
+
+# Learning task: find the x most similar fonts and the x most dissimilar fonts
+
+# Assumptions:
+# - "display" fonts do not pair well together
+# - fonts from the same family pair well together
+# - "handwriting" and "monospace" fonts do not pair well together
+# -
+
+# Map fonts to index and index to fonts
+font_index = {fonts[0]: idx for idx, font in enumerate(fonts)}
+book_index['Wire One']
+
+# Do I create links from each font/index to every feature?
