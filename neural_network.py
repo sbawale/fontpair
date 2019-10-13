@@ -9,7 +9,9 @@ from collections import Counter, OrderedDict
 # possibly add isbodyText as a category?
 
 # Get helper methods
+from preprocess_data import preprocess_data
 from get_googlefonts_data import get_googlefonts_data
+from helper_functions import *
 
 # Get preprocessed data from Google Fonts API
 fontWeights = ['Thin','Extra Light','Light','Regular','Medium',
@@ -20,13 +22,13 @@ colNames =  ['name', 'family', 'category','italic','weight']
 fonts = get_googlefonts_data(fontWeights,colNames)
 print(fonts.tail(50))
 
-
+# Load database
 
 # create list of all unique words in font names
 # create list of features
-unique_names = []
-is_serif = [0]
-features = ['display', 'body', 'handwriting', 'monospace']
+unique_names = get_unique_strings(fonts,'name')
+is_serif = zeros(1)
+features = ['body', 'display', 'handwriting', 'monospace']
 
 # Need d-dimensional vector; at least 5???
 
