@@ -20,19 +20,30 @@ from collections import Counter, OrderedDict
 #     else:
 #         return -1 # mark as ambiguous so can label by hand later
 
-def check_if_serif(category_font):
+# def check_if_serif(*font):
+#     category = font[2]
+
+def check_if_serif(family,category):
     # category_font = font['category']
 
-    if category_font == 'serif':
+    if category == 'serif' or 'serif' in family:
         return 1
-    elif category_font == 'sans-serif':
+    elif category == 'sans-serif' or 'sans' in family:
         return 0
-    elif category_font == 'handwriting':
+    elif category == 'handwriting':
         return 0 # handwriting fonts are classified as sans-serif
-    elif category_font == 'monospace':
+    elif category == 'monospace':
         return 1 # monospaced fonts are classified as serif
     else:
         return -1 # mark as ambiguous so can label by hand later
+        # look up family in hand-labeled dataset?
+
+def label_serif(fonts,file):
+    # fonts is the label_me list
+    # file is file with name-serif mapping
+    for f in fonts:
+        print(f['family'])
+        f['is_serif'] = input('is_serif: ')
 
 def get_unique_strings(database,tuple_attribute):
     unique = []
