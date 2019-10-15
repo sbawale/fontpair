@@ -1,31 +1,9 @@
-import json, urllib.request, re
+import json, urllib.request, re, csv
 import pandas as pd
 import numpy as np
 from contextlib import closing
-from itertools import chain
-from collections import Counter, OrderedDict
-
-# def check_if_serif(font,family):
-#     category_font = font['category']
-#     category_family = family['category']
-
-#     if category_font == 'serif' or category_family == 'serif':
-#         return 1
-#     elif category_font == 'sans-serif' or category_family == 'sans-serif':
-#         return 0
-#     elif category_font == 'handwriting' or category_family == 'handwriting':
-#         return 0 # handwriting fonts are classified as sans-serif
-#     elif category_font == 'monospace' or category_family == 'monospace':
-#         return 1 # monospaced fonts are classified as serif
-#     else:
-#         return -1 # mark as ambiguous so can label by hand later
-
-# def check_if_serif(*font):
-#     category = font[2]
 
 def check_if_serif(family,category):
-    # category_font = font['category']
-
     if category == 'serif' or 'serif' in family:
         return 1
     elif category == 'sans-serif' or 'sans' in family:
@@ -36,46 +14,66 @@ def check_if_serif(family,category):
         return 1 # monospaced fonts are classified as serif
     else:
         return -1 # mark as ambiguous so can label by hand later
-        # look up family in hand-labeled dataset?
 
-def label_serif(fonts,file):
-    # fonts is the label_me list
-    # file is file with name-serif mapping
-    for f in fonts:
-        print(f['family'])
-        f['is_serif'] = input('is_serif: ')
+def get_unlabeled_families(filename):
+    families = []
+    serifs = []
 
-def get_unique_strings(database,tuple_attribute):
+    # Read in CSV file of hand labeled font families (serif/sans-serif)
+    with open(filename) as csvfile:
+        csvreader = csv.reader(csvfile)
+        next(csvreader) # skip header/first line
+        for row in csvreader:
+            family = row[0]
+            serif = row[1]
+            families.append(family)
+            serifs.append(serif)
+
+    return families, serifs
+
+def get_unique_strings(dataset,feature_index):
     unique = []
-    for font in database:
-        if font[tuple_attribute] not in unique:
-            unique.append(font[tuple_attribute])
-    # unique.sort()
+    for font in dataset.itertuples(index=False,name=None):
+        # Split current value into individual words
+        feature = font[feature_index].split()
+        for word in feature:
+            if word not in unique:
+                unique.append(word)
     return unique
 
-def vectorize_font(font,names,categories):
-    name_vector = zeros(len(names))
-    category_vector = zeros(len(categories))
-    serif_vector = zeros(1)
-    weight_vector = font['weight'] # need to scale somehow... maybe divide by 1000?
+def vectorize_font(font,names,families,features):
+    # colNames =  ['name','family','category','is_body','is_serif','is_italic','weight']
+    # features = ['body','display','handwriting','monospace','serif','sans-serif','italic','weight']
 
-    # HAAAALP
-    # ahem I mean iterate through arrays and find matches; mark as 1
+    # Instantiate sub vectors
+    name_vector = [0]*len(names)
+    family_vector = [0]*len(families)
+    feature_vector = [0]*len(features)
+
+    # Convert name and family to list of individual words
+    name = font[0].split()
+    family = font[1].split()
+
+    # Convert name and family to vector
     for i in range(0,len(names)):
-        if names[i] in font['name']:
+        if names[i] in name:
             name_vector[i] = 1
 
-    for i in range(0,len(categories)):
-        # Check values for each feature
-        print("help")
+    for i in range(0,len(families)):
+        if families[i] in family:
+            family_vector[i] = 1
 
-    # Combine individual vectors into final font vector
-    font_vector = name_vector + feature_vector + serif_vector + weight_vector
+    # Get the remaining features, check values for each feature
+    feature_vector[0] = font[3] # body
+    feature_vector[1] = int(font[2] == 'display') # category
+    feature_vector[2] = int(font[2] == 'handwriting') # category
+    feature_vector[3] = int(font[2] == 'monospace') # category
+    feature_vector[4] = font[4] # serif
+    feature_vector[5] = int(not font[4]) # sans-serif
+    feature_vector[6] = font[5] # italic
+    feature_vector[7] = font[6]/1000 # weight
+    # need to scale weight somehow... maybe divide by 1000? or do another bag of words?
+
+    # Combine sub vectors into complete font vector
+    font_vector = name_vector + family_vector + feature_vector
     return font_vector
-
-def get_font_vectors(fonts,names,features):
-    vectors = []
-    for f in fonts:
-        current = vectorize_font(f,names,features)
-        vectors.append(current)
-    return vectors

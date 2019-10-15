@@ -3,15 +3,15 @@ import pandas as pd
 from contextlib import closing
 from helper_functions import *
 
-def get_googlefonts_data():
-    # Initialize font lists for both databases and array of font weights
+def preprocess_data_gf():
+    # Initialize font list, column/feature names, array of font weights, and get ambiguous families
     gf = []
-    fs = []
     label_me = []
-    col_names =  ['name','family','category','is_body','is_serif','italic','weight']
+    col_names =  ['name','family','category','is_body','is_serif','is_italic','weight']
     fontWeights = ['Thin','Extra Light','Light','Regular','Medium',
                    'Semi Bold','Bold','Extra Bold','Black']
-    # corresponding numerical weights: [100, 200, 300, 400, 500, 600, 700, 800, 900]
+    [families,serifs] = get_unlabeled_families('label_by_hand.csv')
+    # Corresponding numerical weights: [100, 200, 300, 400, 500, 600, 700, 800, 900]
 
     # *************** IMPORT AND CLEAN GOOGLE FONTS DATA ***************
 
@@ -30,16 +30,16 @@ def get_googlefonts_data():
             name = ""
             family = font['family'].strip()
             category = font['category'].strip()
-            is_body = category != 'display'
+            is_body = int(category != 'display')
             is_serif = check_if_serif(family.lower(),category)
-            italic = 0 # default is 0: not italic
+            is_italic = 0 # default is 0: not is_italic
             weight = 400 # default is 400: regular
 
-            # Add families with is_serif = -1 to list of families to label by hand
+            # Get serif status for fonts with is_serif = -1
             if is_serif == -1:
-                # print(family)
-                # is_serif = input(family + ' is_serif: ')
-                label_me.append(family)
+                for i, f in enumerate(families):
+                    if f == family:
+                        is_serif = serifs[i]
 
             # Check for font variants
             variants = font['variants']
@@ -56,9 +56,9 @@ def get_googlefonts_data():
                     weightIndex = int((weight/100)-1)
                     name = family + " " + fontWeights[weightIndex]
 
-                    # Check if italic
+                    # Check if is_italic
                     if 'italic' in varWeight:
-                        italic = 1
+                        is_italic = 1
                         name = name + " Italic"
 
                     # Create tuple to be appended to list
@@ -68,7 +68,7 @@ def get_googlefonts_data():
                     current['category'] = category
                     current['is_body'] = is_body
                     current['is_serif'] = is_serif
-                    current['italic'] = italic
+                    current['is_italic'] = is_italic
                     current['weight'] = weight
 
                     # Print to console and append to gf list
@@ -84,7 +84,7 @@ def get_googlefonts_data():
                 current['category'] = category
                 current['is_body'] = is_body
                 current['is_serif'] = is_serif
-                current['italic'] = italic
+                current['is_italic'] = is_italic
                 current['weight'] = weight
 
                 # Print to console and append to gf list
@@ -93,10 +93,15 @@ def get_googlefonts_data():
 
     # Convert gf list to dataframe
     dfGF = pd.DataFrame(gf, columns = col_names)
-    # with pd.option_context('display.max_rows', None, 'display.max_columns', None):  # more options can be specified also
-    #     print(dfGF)
-    # dfGF.to_csv(r"df.csv", index = None, header=True)
-    print("\nGoogle Fonts data successfully loaded.\n")
+    print("\nGoogle Fonts data successfully loaded!\n")
     return dfGF
 
-test = get_googlefonts_data()
+# ***************** TESTING *****************
+
+# test = preprocess_data_gf()
+# with pd.option_context('display.max_rows', None, 'display.max_columns', None):
+#     print(test)
+# test.to_csv(r"testgf.csv", index = None, header=True)
+
+# test2 = get_unlabeled_families(test)
+# print(test2)
