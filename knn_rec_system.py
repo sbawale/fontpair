@@ -9,7 +9,7 @@ from helper_functions import *
 # def build_knn_model():
 
 # Preprocess data, split into train/test/val sets
-fonts = filter_data_gf()
+fonts = preprocess_data_gf()
 train_set, test_set, val_set = split_train_test_val(fonts,0.8)
 
 

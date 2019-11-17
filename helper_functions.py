@@ -52,3 +52,50 @@ def get_unique_strings(dataset,feature_index):
             if word not in unique:
                 unique.append(word)
     return unique
+
+def get_font_vectors(fonts, include_family):
+    # Convert all features (weight, category, etc.) to single bag of words
+    bags_of_words = []
+
+    for font in fonts.itertuples(index=False,name=None):
+        if include_family:
+            family = font[1].split()
+            no_digits = "".join(filter(lambda x: not x.isdigit(), family))
+            curr_bag = str(no_digits) + ' ' + font[2]
+        else:
+            curr_bag = font[2]
+
+        # Get body value
+        if font[3] == 1: body = ' body'
+        else: body = ' heading'
+
+        # Get serif value
+        if font[4] == 1: serif = ' serif'
+        else: serif = ' sans-serif'
+
+        # Get italic value
+        if font[5] == 1: italic = ' italic'
+        else: italic = ' roman'
+
+        # Add the current bag to the list of all bags
+        curr_bag += body + serif + italic + ' ' + font[6]
+        bags_of_words.append(curr_bag)
+
+    # Convert bags of words to TF-IDF vectors
+    print("\nattempting to create vectors...\n")
+    tfidf = TfidfVectorizer(ngram_range=(1, 1), min_df=0.0001)
+    tfidf_matrix = tfidf.fit_transform(bags_of_words)
+    vectors = tfidf_matrix
+    print("successfully vectorized fonts!")
+
+    # Create new dataframe with 3 columns: font name, original bag of words, vector
+    print("\ncreating new dataframe...\n")
+    font_dict = fonts[['name']]
+    font_dict.insert(1, 'bag_of_words', bags_of_words)
+    font_dict.insert(2, 'tfidf_vector', vectors)
+    font_dict.insert(3, 'id', font_dict.index.tolist())
+    font_dict.set_index('name', drop=True, append=False, inplace=True, verify_integrity=False)
+    # font_dict.to_csv('vectortest.csv')
+    print("\ndataframe created!\n")
+
+    return vectors, font_dict

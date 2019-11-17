@@ -5,7 +5,7 @@ from helper_functions import *
 from similarity import *
 
 # Preprocess data, split into train/test/val sets
-test = filter_data_gf()
+test = preprocess_data_gf()
 print(test.head(10))
 train_set, test_set, val_set = split_train_test_val(test,0.8)
 # print(train_set)
