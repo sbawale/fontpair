@@ -99,3 +99,15 @@ def get_font_vectors(fonts, include_family):
     print("\ndataframe created!\n")
 
     return vectors, font_dict
+
+def get_font_combinations(fonts,indices,font,num_recs): # FIX ME SO I CAN TAKE FONT NAME
+    # Get font name/index pair
+    temp = fonts.iloc[0:num_recs-1]
+    for t in temp:
+        print(temp[t]['name'])
+    f = fonts.loc[font]
+    # f = font
+    # Get recommended fonts
+    for i in indices[f][0:num_recs-1]:
+        print(fonts.iloc[i]["name"])
+        print(fonts.iloc[i]["url"])

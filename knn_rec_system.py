@@ -7,12 +7,12 @@ from preprocess_data_gf import *
 from helper_functions import *
 
 # def build_knn_model():
-
+#
 # Preprocess data, split into train/test/val sets
 fonts = preprocess_data_gf()
 train_set, test_set, val_set = split_train_test_val(fonts,0.8)
 
-
+# One-hot encode fonts for scaling
 ohe_fonts = pd.concat(
     [fonts["category"].str.get_dummies(sep=","),
     pd.get_dummies(fonts[["weight"]]),
@@ -20,31 +20,32 @@ ohe_fonts = pd.concat(
     fonts[["is_serif"]],
     fonts["is_italic"]],
     axis=1)
-
-print(ohe_fonts)
-print(ohe_fonts.columns)
-
+# print(ohe_fonts)
+# print(ohe_fonts.columns)
 min_max_scaler = MinMaxScaler()
 font_vectors = min_max_scaler.fit_transform(ohe_fonts)
-print(font_vectors)
-print(font_vectors.shape)
+# print(font_vectors)
+# print(font_vectors.shape)
 
+# Build KNN model using font vectors
 nbrs = NearestNeighbors(n_neighbors=6, metric='cosine', algorithm='brute').fit(ohe_fonts)
 distances, indices = nbrs.kneighbors(ohe_fonts)
-print(distances)
-print(indices)
+# print(distances)
+# print(indices)
 
-for id in indices[9][1:5]:
-    print(fonts.iloc[id]["name"])
-
-def get_font_combinations(fonts,indices,font,num_recs):
-    # Get font name/index pair
-    f = fonts.loc['font']
-
-    # Get recommended fonts
-    for i in indices[f][1:num_recs]:
-        print(fonts.iloc[i]["name"])
-
+# for id in indices[9][1:5]:
+#     print(fonts.iloc[id]["name"])
+#     print(fonts.iloc[id]["url"])
+print(fonts.head())
+print(fonts.keys())
+# choice = fonts[9]
+# choice = fonts['name'] == 'Yellowtail'
+# choice = fonts['name']['Yellowtail']
+choice = fonts.loc['Yellowtail']
+choice = 'Yellowtail'
+get_font_combinations(fonts,indices,choice,5)
+# print(fonts['family'].keys())
+# print(fonts['family'].loc['Abel'])
 # print_similar_animes(query="Naruto")
 
 # def get_index_from_name(name):
