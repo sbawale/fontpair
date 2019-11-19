@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+{% block page_content %}
+<h1>Fonts</h1>
+<div class="row">
+{% for font in fonts %}
+    <div class="col-md-4">
+        <div class="card mb-2">
+            <!-- <img class="card-img-top" src="{% static font.image %}"> -->
+            <!-- <img class="card-img-top" src="https://www.gstatic.com/images/icons/material/apps/fonts/1x/opengraph_color_1200dp.png"> -->
+            <!-- <img class="card-img-top" src="./fonts/static/img/gf_logo.png"> -->
+            <div class="card-body">
+                <h5 class="card-title">{{ font.name }}</h5>
+                <p class="card-text">{{ font.category }}</p>
+                <a href="{% url 'font_detail' font.pk %}"
+                   class="btn btn-primary">
+                    Read More
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
