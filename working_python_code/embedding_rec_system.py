@@ -6,7 +6,7 @@ from similarity import *
 
 # Preprocess data, split into train/test/val sets
 test = preprocess_data_gf()
-print(test.head(10))
+print("test head:\n",test.head(10))
 # train_set, test_set, val_set = split_train_test_val(test,0.8)
 # print(train_set)
 # print(test_set)
@@ -43,6 +43,6 @@ print("calculating cosine similarity matrix...")
 sim_matrix = calculate_cosine_similarity_matrix(embeddings, ids)
 # print(sim_matrix.columns)
 print("cosine similarity matrix created!\ntesting recommender function...")
-similar, dissimilar = get_n_recommended_fonts(sim_matrix, font_dict, 'Open Sans 400', 5)
-print("similar fonts:\n",similar)
-print("\ndissimilar fonts:\n",dissimilar)
+names_s, names_d, similar, dissimilar, rows_s, rows_d = get_n_recommended_fonts(sim_matrix, font_dict, 'Open Sans 400', 10)
+print("similar fonts:\n",rows_s)
+print("\ndissimilar fonts:\n",rows_d)

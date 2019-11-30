@@ -2,206 +2,207 @@ import os, webbrowser
 import pandas as pd
 from sklearn.neighbors import NearestNeighbors
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import LabelEncoder
 from preprocess_data_gf import *
 from helper_functions import *
 from similarity import *
+from knn_scratch import *
 
-# def build_knn_model():
-#
 # Preprocess data
 fonts = preprocess_data_gf()
-# train_set, test_set, val_set = split_train_test_val(fonts,0.8)
-# print("fonts head: ",fonts.head())
-# print("feature cols only: ", fonts[['category','is_body','is_italic','is_serif','weight']].head())
-# print("keys: ", fonts.keys())
-# print("find Yellowtail: ", fonts.loc['Yellowtail'])
+# print('fonts head: ',fonts.head())
+# print('feature cols only: ', fonts[['category','is_body','is_italic','is_serif','weight']].head())
+# print('keys: ', fonts.keys())
+# print('find Yellowtail: ', fonts.loc['Yellowtail'])
 
 # One-hot encode fonts for scaling
 ohe_fonts = pd.concat(
-    # [fonts["category"].str.get_dummies(sep=","),
-    [pd.get_dummies(fonts[["category"]]),
-    pd.get_dummies(fonts[["weight"]]),
-    fonts[["is_body"]],
-    fonts[["is_serif"]],
-    fonts["is_italic"]],
+    [pd.get_dummies(fonts[['family']]),
+    pd.get_dummies(fonts[['category']]),
+    pd.get_dummies(fonts[['weight']]),
+    fonts[['is_body']],
+    fonts[['is_serif']],
+    fonts['is_italic']],
     axis=1)
-# print("ohe_fonts:\n",ohe_fonts)
-# print("\nohe_fonts cols: ",ohe_fonts.columns)
+print('ohe_fonts:\n',ohe_fonts)
+# print('\nohe_fonts cols: ',ohe_fonts.columns)
+# pd.DataFrame(ohe_fonts).to_csv(r'ohe.csv',header=True)
+font_vectors = ohe_fonts
 
-# Scale fonts
-min_max_scaler = MinMaxScaler()
-font_vectors = min_max_scaler.fit_transform(ohe_fonts)
-# print("\nfont_vectors\n",font_vectors)
+families = fonts['family'].unique()
+categories = ['display','handwriting','monospace','serif','sans-serif']
+font_weights = ['thin','extralight','light','regular','medium','semibold','bold','extrabold','black']
+
+le_cat = LabelEncoder()
+le_weight = LabelEncoder()
+le_family = LabelEncoder()
+
+le_cat.fit(categories)
+le_weight.fit(font_weights)
+le_family.fit(families)
+
+copy = fonts
+
+copy['category'] = le_cat.transform(copy['category'])
+copy['weight'] = le_weight.transform(copy['weight'])
+copy['family'] = le_family.transform(copy['family'])
+# print(copy)
+# scaler = MinMaxScaler()
+scaler = StandardScaler()
+scaler.fit_transform(copy[['family','category','weight']])
+# print(copy)
+# print("cat: ",cat)
+# print('weight:',wt)
+# print('fam:',fam)
+# print(cat.shape)
+# print(np.fliplr(cat).shape)
+
+# cat_df = pd.DataFrame(data=cat,columns=['category'])
+# wt_df = pd.DataFrame(data=cat,columns=['weight'])
+# fam_df = pd.DataFrame(data=cat,columns=['family'])
+
+# cat_df.reset_index(drop=True, inplace=True)
+# wt_df.reset_index(drop=True, inplace=True)
+# fam_df.reset_index(drop=True, inplace=True)
+
+# # print('\ncat_df:\n',cat_df)
+
+# temp1 = fonts[['is_body','is_serif','is_italic']]#.reset_index(drop=True, inplace=True)
+# temp1 = temp1.reset_index(drop=True, inplace=True)
+# # print(temp1)
+# temp1 = pd.concat(
+#     [fonts['is_body'],
+#     fonts['is_serif'],
+#     fonts['is_italic']],
+#     axis=1)
+# temp1 = temp1.reset_index(drop=True, inplace=True)
+# temp2 = pd.concat([cat_df,wt_df,fam_df],axis=1)
+# # print('\ntemp1:\n',temp1)
+# # print('\ntemp2:\n',temp2)
+# temp = pd.concat(
+#     [temp1,
+#     temp2],
+#     axis=1)
+# # print('temp:',temp)
+# scaler = MinMaxScaler()
+# scaler.fit_transform(temp)
+# print('temp:',temp)
+# print(cat.type)
+# Scale one-hot encoded fonts
+# min_max_scaler = MinMaxScaler()
+# font_vectors = min_max_scaler.fit_transform(ohe_fonts)
+# print('\nfont_vectors\n',font_vectors)
+# pd.DataFrame(font_vectors).to_csv(r'vectors.csv', header=True)
 # print(font_vectors.shape)
 
 # Build KNN model using font vectors
-nbrs = NearestNeighbors(n_neighbors=6, metric='cosine', algorithm='auto').fit(font_vectors)
-# print("\nknn model:\n",nbrs)
+# nbrs = NearestNeighbors(n_neighbors=200, metric='cosine', algorithm='auto').fit(font_vectors)
+# distances, indices = nbrs.kneighbors(font_vectors)
+nbrs = NearestNeighbors(n_neighbors=10, metric='euclidean', algorithm='auto').fit(font_vectors)
 distances, indices = nbrs.kneighbors(font_vectors)
-# print("\ndistances:\n",distances)
-# print("\nindices:\n",indices)
+# print('\nknn model:\n',nbrs)
+# print('\ndistances:\n',distances)
+# print('\nindices:\n',indices)
 
-# Example choice
-current = font_vectors[5]
-# print("\ncurrent:\n",current)
-# print("\nreshaped current:\n",current.reshape(1,-1))
-d,i = nbrs.kneighbors(current.reshape(1,-1))
-recs = i[0]
-# print("\nd: \n",d)
-print("\ni: \n",i)
-
-full_recs = []
-
-for i in range(0,5):
-    x = recs[i]
-    print("x: ",x)
-    # full_recs[i] = fonts.loc[fonts['idx'] == x]
-    full_recs.append(fonts.iloc[x])
-
-# print("\nrecommendations:\n",full_recs)
-
-
-choice = 'Yellowtail'
+# ************* Test 1 *************
+choice = 'Open Sans 400'
 # get_font_combinations(fonts,nbrs,choice,5)
-full_recs = get_font_combinations(choice,fonts,font_vectors,nbrs,5)
-print("\nrecommendations:\n",full_recs)
-# get_font_combinations(font,fonts,vectors,knn,num_recs):
-# simr, disr, similar,dissimilar = get_n_recommended_fonts(idx_df, fonts, choice, 5)
-# print(simr)
-# print(disr)
-# print(similar)
-# print(dissimilar)
+full_recs = get_font_combinations(choice,fonts,font_vectors,nbrs,10)
+# print(full_recs)
+full_recs_df = pd.DataFrame(full_recs)
+full_recs_df.to_csv(r'open_sans_k6.csv', index=None, header=True)
+print('\nrecommendations:\n',full_recs)
+
+print('\nNow testing knn from scratch...\n')
+# Index: 1878
+# print(font_vectors.head())
+# print(font_vectors.keys())
+# print(font_vectors.index)
+# font_vectors = font_vectors.reset_index()
+# print(font_vectors.keys())
+# print(font_vectors['Abhaya Libre 500'])
+neighbors = get_neighbors(font_vectors, font_vectors.loc[choice], 10)
+print("\noriginal: \n",font_vectors.loc[choice])
+print("neighbors:")
+for neighbor in neighbors:
+    print(neighbor)
+
+
+# ************* Test 2 *************
+# current = font_vectors[5]
+# # print('\ncurrent:\n',current)
+# # print('\nreshaped current:\n',current.reshape(1,-1))
+# d,i = nbrs.kneighbors(current.reshape(1,-1))
+# recs = i[0]
+# # print('\nd: \n',d)
+# # print('\ni: \n',i)
+
+# full_recs = []
+# for i in range(0,5):
+#     x = recs[i]
+#     # print('x: ',x)
+#     # full_recs[i] = fonts.loc[fonts['idx'] == x]
+#     full_recs.append(fonts.iloc[x])
+
+# print('\nrecommendations:\n',full_recs)
+
+
+# ************* Test K Value and Distance Metric *************
+# k val must be > 5
+font = 'Open Sans 400'
+num_neighbors = 5
+
+def test_k_val_distance(k,metric,font,fonts,vectors,num_neighbors):
+    filename = 'recs_k' + str(k) + '_' + metric + '.csv'
+    distance = ''
+    print(metric)
+
+    if k <= 5:
+        print("K must be greater than 5")
+    elif metric == 'c':
+        distance = 'cosine'
+    elif metric == 'e':
+        distance = 'euclidean'
+    else:
+        print("Invalid metric")
+
+    knn = NearestNeighbors(n_neighbors=k, metric=distance, algorithm='auto').fit(vectors)
+    recs= get_font_combinations(font,fonts,vectors,knn,num_neighbors)
+
+    # for i in range(0,len(recs)):
+    #     webbrowser.open_new(recs[i]['url'])
+
+    df = pd.DataFrame(recs)
+    df.to_csv(filename, index=None, header=True)
+
+    return df
+
+
+# recsk6c = test_k_val_distance(6,'c',font,fonts,font_vectors,num_neighbors)
+# webbrowser.open_new('www.google.com')
+# recsk6e = test_k_val_distance(6,'e',font,fonts,font_vectors,num_neighbors) # like this one better
+
+# recsk100c = test_k_val_distance(100,'c',font,fonts,font_vectors,num_neighbors)
+# webbrowser.open_new('www.google.com')
+# recsk100e = test_k_val_distance(100,'e',font,fonts,font_vectors,num_neighbors)
+
+# recsk200c = test_k_val_distance(200,'c',font,fonts,font_vectors,num_neighbors)
+# webbrowser.open_new('www.google.com')
+# recsk200e = test_k_val_distance(200,'e',font,fonts,font_vectors,num_neighbors)
+
+# knn_k4_c = NearestNeighbors(n_neighbors=4, metric='cosine', algorithm='auto').fit(font_vectors)
+# recs_k4_c = get_font_combinations(font,fonts,font_vectors,knn_k4_c,num_neighbors)
+# df_k4c = pd.DataFrame(knn_k4_c)
+# df_k4c.to_csv(r'k4c.csv', index=None, header=True)
+
+
+# knn_k4_e = NearestNeighbors(n_neighbors=4, metric='euclidean', algorithm='auto').fit(font_vectors)
+# recs_k4_e = get_font_combinations(font,fonts,font_vectors,knn_k4_e,num_neighbors)
+# df_k4e = pd.DataFrame(knn_k3_e)
+# df_k4e.to_csv(r'k4e.csv', index=None, header=True)
 
 
 
-
-
-
-# print(fonts['family'].keys())
-# print(fonts['family'].loc['Abel'])
-# print_similar_animes(query="Naruto")
-
-# def get_index_from_name(name):
-#     return anime[anime["name"]==name].index.tolist()[0]
-
-# def get_id_from_partial_name(partial):
-#     all_anime_names = list(anime.name.values)
-#     for name in all_anime_names:
-#         if partial in name:
-#             print(name,all_anime_names.index(name))
-
-# def print_similar_animes(query=None,id=None):
-#     if id:
-#         for id in indices[id][1:]:
-#             print(fonts.ix[id]["name"])
-#     if query:
-#         found_id = get_index_from_name(query)
-#         for id in indices[found_id][1:]:
-#             print(fonts.ix[id]["name"])
-
-# pleasework = [fonts[['category', 'weight']]]
-# print(pleasework)
-# ohe_fw = pd.get_dummies(pleasework)
-# print(ohe)
-
-# ohe_cat = pd.get_dummies(fonts['category'])
-# ohe_body = pd.get_dummies(fonts['is_body'])
-# ohe_serif = pd.get_dummies(fonts['is_serif'])
-# ohe_italic = pd.get_dummies(fonts['is_italic'])
-# ohe_weight = pd.get_dummies(fonts['weight'])
-
-# ohe_fonts = pd.concat(
-#     ohe_cat,
-#     ohe_body,
-#     ohe_serif,
-#     ohe_italic,
-#     ohe_weight)
-# ohe_fonts = ohe_cat.append(ohe_weight)
-# print(ohe_fonts)
-
-# vectors = pd.concat(
-#     fonts['name'].tolist(),
-#     ohe_fonts,
-#     fonts['is_body'],
-#     fonts['is_serif'],
-#     fonts['is_italic'],
-#     fonts['weight'])
-# print(vectors.head())
-
-# font_dict = pd.concat(ohe_fw)
-# font_dict.insert(1, 'is_body', fonts['is_body'])
-# font_dict.insert(2, 'is_serif', fonts['is_serif'])
-# font_dict.insert(3, 'is_italic', fonts['is_italic'])
-# font_dict.insert(4, 'weight', ohe_weight)
-# font_dict.insert(0, 'id', font_dict.index.tolist())
-# font_dict.set_index('name', drop=True, append=False, inplace=True, verify_integrity=False)
-# print(font_dict.head())
-# sub = test[['category','is_body','is_serif','is_italic','weight']]
-# print(sub.columns)
-
-# ohe = OneHotEncoder()
-# x = ohe.fit(sub['category'])
-# print(x)
-
-
-# enc = OneHotEncoder(categorical_features = [0])
-# enc.fit_transform(sub)
-# print(sub)
-
-# pd.get_dummies(sub, columns=["category"]).head()
-
-# min_max_scaler = MinMaxScaler()
-# anime_features = min_max_scaler.fit_transform(sub)
-# print(anime_features)
-
-
-# nbrs = NearestNeighbors(n_neighbors=6, algorithm='ball_tree').fit(sub)
-# distances, indices = nbrs.kneighbors(sub)
-# print(distances)
-# print(indices)
-
-
-# def one_hot_encode_fonts(fonts):
-#     vector = []
-#     categories = fonts['category']
-
-
-# def help:
-#     #make an object for the NearestNeighbors Class.
-#     model_knn = NearestNeighbors(metric='cosine', algorithm='brute', n_neighbors=20, n_jobs=-1)
-#     # fit the dataset
-#     model_knn.fit(train_set)
-
-
-#     # example recommendation
-#     my_favorite = 'Iron Man'
-
-#     make_recommendation(
-#         model_knn=model_knn,
-#         data=train_set,
-#         mapper=movie_to_idx,
-#         fav_movie=my_favorite,
-#         n_recommendations=10
-#         )
-
-# def make_recommendation(model_knn, data, mapper, fav_movie, n_recommendations):
-
-#     # fit
-#     model_knn.fit(data)
-#     # get input movie index
-#     print('You have input movie:', fav_movie)
-#     idx = fuzzy_matching(mapper, fav_movie, verbose=True)
-
-#     print('Recommendation system start to make inference')
-#     print('......\n')
-#     distances, indices = model_knn.kneighbors(data[idx], n_neighbors=n_recommendations+1)
-
-#     raw_recommends = \
-#         sorted(list(zip(indices.squeeze().tolist(), distances.squeeze().tolist())), key=lambda x: x[1])[:0:-1]
-#     # get reverse mapper
-#     reverse_mapper = {v: k for k, v in mapper.items()}
-#     # print recommendations
-#     print('Recommendations for {}:'.format(fav_movie))
-#     for i, (idx, dist) in enumerate(raw_recommends):
-#         print('{0}: {1}, with distance of {2}'.format(i+1, reverse_mapper[idx], dist))
+# ************* Test Distance Metric *************

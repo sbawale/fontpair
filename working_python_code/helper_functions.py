@@ -1,4 +1,4 @@
-import csv
+import csv, webbrowser
 import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -84,11 +84,11 @@ def get_font_vectors_tfidf(fonts, include_family):
         bags_of_words.append(curr_bag)
 
     # Convert bags of words to TF-IDF vectors
-    print("\nattempting to create vectors...\n")
+    print('\nattempting to create vectors...\n')
     tfidf = TfidfVectorizer(ngram_range=(1, 1), min_df=0.0001)
     tfidf_matrix = tfidf.fit_transform(bags_of_words)
     vectors = tfidf_matrix
-    print("successfully vectorized fonts!")
+    print('successfully vectorized fonts!')
 
     # Create new dataframe with 4 columns: font name, original bag of words, vector, id
     print("\ncreating new dataframe...\n")
@@ -112,79 +112,48 @@ def get_font_vectors_tfidf(fonts, include_family):
 
     return vectors, font_dict
 
-def one_hot_encode_font(font):
-    ohe_font = pd.concat(
-        [font["category"].str.get_dummies(sep=","),
-        pd.get_dummies(font[["weight"]]),
-        font[["is_body"]],
-        font[["is_serif"]],
-        font["is_italic"]],
-        axis=1)
-    return ohe_font
-
-def get_font_vectors_ohe(fonts):
-    ohe_fonts = pd.concat(
-        [fonts["category"].str.get_dummies(sep=","),
-        pd.get_dummies(fonts[["weight"]]),
-        fonts[["is_body"]],
-        fonts[["is_serif"]],
-        fonts["is_italic"]],
-        axis=1)
-    min_max_scaler = MinMaxScaler()
-    font_vectors = min_max_scaler.fit_transform(ohe_fonts)
-    return font_vectors
-
-# def get_font_combinations(fonts,indices,font,num_recs): # FIX ME SO I CAN TAKE FONT NAME
 def get_font_combinations(font,fonts,vectors,knn,num_recs):
     # Get font object and find corresponding vector
     font_obj = fonts.loc[font]
     idx = font_obj['idx']
-    current = vectors[idx]
-    # print("\ncurrent:\n",current)
-    # print("\nreshaped current:\n",current.reshape(1,-1))
+    # choice = vectors[idx]
+    choice = vectors.loc[font]
+    # print(idx)
 
     # Get k nearest vectors for specified font
-    distances,indices = knn.kneighbors(current.reshape(1,-1))
+    # distances,indices = knn.kneighbors(choice.reshape(1,-1))
+    distances,indices = knn.kneighbors([choice])
+    # print(distances)
     rec_vectors = indices[0]
-    # print("\nd: \n",d)
-    print("\nindices: \n",indices)
 
     # Use recommended vectors to find corresponding font objects
     full_recs = []
-    for i in range(0,5):
+    for i in range(0,num_recs):
         curr_rec = rec_vectors[i]
         full_recs.append(fonts.iloc[curr_rec])
+        # webbrowser.open_new(full_recs[i]['url'])
 
-    # print("\nrecommendations:\n",full_recs)
     return full_recs
 
+# def one_hot_encode_font(font):
+#     ohe_font = pd.concat(
+#         [font["category"].str.get_dummies(sep=","),
+#         pd.get_dummies(font[["weight"]]),
+#         font[["is_body"]],
+#         font[["is_serif"]],
+#         font["is_italic"]],
+#         axis=1)
+#     return ohe_font
 
-    # Find index of specified font, then get nearest neighbors
-    # find_recs_for = fonts.loc[font]
-    # print(find_recs_for)
-    # index = find_recs_for['idx']
-    # print(index)
-
-    # # current_position = indices.iloc[index]
-    # # current_position = indices.where(arr == index)
-    # cond = indices == index # cond is a boolean array
-    # current_position = indices[cond]
-    # print(current_position)
-
-    # Example choice
-
-    # Get font name/index pair
-    # print("indices: ",indices)
-    # print(indices.shape)
-    # halp = fonts.loc[indices]
-    # print("halp: ", halp)
-    # temp = fonts.iloc[0:num_recs-1]
-    # print("temp: ",temp)
-    # for t in temp:
-    #     print(temp[t]['name'])
-    # f = fonts.loc[font]
-    # # f = font
-    # # Get recommended fonts
-    # for i in indices[f][0:num_recs-1]:
-    #     print(fonts.iloc[i]["name"])
-    #     print(fonts.iloc[i]["url"])
+# def get_font_vectors_ohe(fonts):
+#     ohe_fonts = pd.concat(
+#         # [fonts["category"].str.get_dummies(sep=","),
+#         [pd.get_dummies(fonts[['category']]),
+#         pd.get_dummies(fonts[['weight']]),
+#         fonts[['is_body']],
+#         fonts[['is_serif']],
+#         fonts['is_italic']],
+#         axis=1)
+#     min_max_scaler = MinMaxScaler()
+#     font_vectors = min_max_scaler.fit_transform(ohe_fonts)
+#     return font_vectors

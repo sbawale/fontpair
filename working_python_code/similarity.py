@@ -24,10 +24,27 @@ def get_n_recommended_fonts(similarity_matrix, font_dict, font, n):
         dissimilar = similar_items.sort_values('similarity_score', ascending=True)
 
         # Get the first n elements of both similar and dissimilar
+        # n_similar = []
+        # for i in range(0,n*2):
+        #     if similar_items[i]['similarity_score'] != 1:
+        #         n_similar.append(similar_items[i])
+
+        # Get names of indexes for which column Age has value 30
+        # print(similar[similar==1])
+        # print(similar.head())
+        too_similar = similar[ similar['similarity_score'] > 0.99 ].index
+        # print("too similar:\n",indexNames)
+
+        # Delete these row indexes from dataFrame
+        similar.drop(too_similar, inplace=True)
+
         n_similar = similar.head(n)
-        n_dissimilar = dissimilar.head(n)
+        # n_dissimilar = dissimilar.head(n*2)
+        xx = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        n_dissimilar = dissimilar
+        n_dissimilar.drop(xx,inplace=True)
         print(n_similar)
-        print(n_dissimilar)
+        print("n_dissimilar:\n",n_dissimilar)
 
         # Get rows for all recommended fonts
         idx_s = n_similar.index.tolist()
@@ -53,7 +70,7 @@ def get_n_recommended_fonts(similarity_matrix, font_dict, font, n):
 
         # Return rows, n_similar, n_dissimilar
         # return rows_s, rows_d
-        return rows_s[0:n][0], rows_d[0:n][0], n_similar, n_dissimilar
+        return rows_s[0:n][0], rows_d[0:n][0], n_similar, n_dissimilar, rows_s, rows_d
 
 def calculate_contrast_similarity(embeddings):
     # Take dot product of embeddings
