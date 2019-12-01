@@ -31,30 +31,31 @@ def get_font_combinations(font,fonts,vectors,knn,num_recs):
 
     return full_recs, similar, dissimilar
 
+def build_recommender():
+    # Get preprocessed font data
+    fonts = preprocess_data_gf()
+
+    # One-hot encode fonts manually
+    ohe_fonts = pd.concat(
+        [pd.get_dummies(fonts[['family']]),
+        pd.get_dummies(fonts[['category']]),
+        pd.get_dummies(fonts[['weight']]),
+        fonts[['is_body']],
+        fonts[['is_serif']],
+        fonts['is_italic']],
+        axis=1)
+
+    # Convert one-hot encoded fonts to numeric vectors
+    vectors = ohe_fonts.astype(float).to_numpy()
+
+    # Build KNN model
+    knn = NearestNeighbors(n_neighbors=len(vectors), metric='euclidean', algorithm='auto').fit(vectors)
+
+    return fonts, vectors, knn
+
 ################# TESTING ################
 
-# Get preprocessed font data
-fonts = preprocess_data_gf()
-
-# One-hot encode fonts manually
-ohe_fonts = pd.concat(
-    [pd.get_dummies(fonts[['family']]),
-    pd.get_dummies(fonts[['category']]),
-    pd.get_dummies(fonts[['weight']]),
-    fonts[['is_body']],
-    fonts[['is_serif']],
-    fonts['is_italic']],
-    axis=1)
-
-# Convert one-hot encoded fonts to numeric vectors
-vectors = ohe_fonts.astype(float).to_numpy()
-
-# Build KNN model
-knn = NearestNeighbors(n_neighbors=len(vectors), metric='euclidean', algorithm='auto').fit(vectors)
-distances, indices = knn.kneighbors(vectors)
-# print(indices[0][1:])
-# print('distances:\n',distances)
-# print('indices:\n',indices)
+fonts, vectors, knn = build_recommender()
 
 # Feed to KNN algorithm
 font_name = 'Yellowtail'
