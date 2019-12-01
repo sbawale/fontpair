@@ -1,10 +1,13 @@
 import os, webbrowser
 import pandas as pd
+from sklearn import preprocessing
 from sklearn.neighbors import NearestNeighbors
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import LabelEncoder
+from sklearn.feature_extraction.text import TfidfVectorizer
+from scipy.spatial import distance
 from preprocess_data_gf import *
 from helper_functions import *
 from similarity import *
@@ -16,7 +19,9 @@ fonts = preprocess_data_gf()
 # print('feature cols only: ', fonts[['category','is_body','is_italic','is_serif','weight']].head())
 # print('keys: ', fonts.keys())
 # print('find Yellowtail: ', fonts.loc['Yellowtail'])
-
+why = np.vectorize(fonts)
+print('help\n',why)
+print(why[0])
 # One-hot encode fonts for scaling
 ohe_fonts = pd.concat(
     [pd.get_dummies(fonts[['family']]),
@@ -26,10 +31,12 @@ ohe_fonts = pd.concat(
     fonts[['is_serif']],
     fonts['is_italic']],
     axis=1)
-print('ohe_fonts:\n',ohe_fonts)
+# print('ohe_fonts:\n',ohe_fonts)
 # print('\nohe_fonts cols: ',ohe_fonts.columns)
 # pd.DataFrame(ohe_fonts).to_csv(r'ohe.csv',header=True)
 font_vectors = ohe_fonts
+print(font_vectors.keys())
+ttt = distance.euclidean(font_vectors[0],font_vectors[1])
 
 families = fonts['family'].unique()
 categories = ['display','handwriting','monospace','serif','sans-serif']
@@ -48,11 +55,22 @@ copy = fonts
 copy['category'] = le_cat.transform(copy['category'])
 copy['weight'] = le_weight.transform(copy['weight'])
 copy['family'] = le_family.transform(copy['family'])
-# print(copy)
+print(copy)
 # scaler = MinMaxScaler()
 scaler = StandardScaler()
-scaler.fit_transform(copy[['family','category','weight']])
-# print(copy)
+# scaler.fit_transform(copy[['family','category','weight']])
+# scaler.fit_transform(copy['family'])
+# scaler.fit_transform(copy['category'])
+# scaler.fit_transform(copy['weight'])
+# copy['category'] = preprocessing.normalize([copy['category']])
+print(copy)
+
+tfidf = TfidfVectorizer(ngram_range=(1, 1), min_df=0.0001)
+tfidf_matrix = tfidf.fit_transform(fonts)
+print('whole matrix:\n',tfidf_matrix)
+# ttt = tfidf_matrix[0] - tfidf_matrix[1]
+ttt = distance.euclidean(tfidf_matrix[0],tfidf_matrix[1])
+print('subtraction test:\n',ttt)
 # print("cat: ",cat)
 # print('weight:',wt)
 # print('fam:',fam)
@@ -113,7 +131,7 @@ full_recs = get_font_combinations(choice,fonts,font_vectors,nbrs,10)
 # print(full_recs)
 full_recs_df = pd.DataFrame(full_recs)
 full_recs_df.to_csv(r'open_sans_k6.csv', index=None, header=True)
-print('\nrecommendations:\n',full_recs)
+# print('\nrecommendations:\n',full_recs)
 
 print('\nNow testing knn from scratch...\n')
 # Index: 1878
@@ -123,12 +141,23 @@ print('\nNow testing knn from scratch...\n')
 # font_vectors = font_vectors.reset_index()
 # print(font_vectors.keys())
 # print(font_vectors['Abhaya Libre 500'])
-neighbors = get_neighbors(font_vectors, font_vectors.loc[choice], 10)
-print("\noriginal: \n",font_vectors.loc[choice])
-print("neighbors:")
-for neighbor in neighbors:
-    print(neighbor)
 
+# neighbors = get_neighbors(font_vectors, font_vectors.loc[choice], 10)
+# print("\noriginal: \n",font_vectors.loc[choice])
+# print("neighbors:")
+# for neighbor in neighbors:
+#     print(neighbor)
+print(font_vectors.keys())
+similar,dissimilar = get_k_neighbors(font_vectors, choice, 6, 10)
+print(similar)
+print(dissimilar)
+
+vecs, font_dict = get_font_vectors_tfidf(fonts, 0)
+print(vecs[0])
+print(font_dict.keys())
+print(font_dict['vector'].shape)
+x = font_dict.loc['ABeeZee 400']
+print(x)
 
 # ************* Test 2 *************
 # current = font_vectors[5]

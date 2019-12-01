@@ -1,9 +1,27 @@
 # Example of getting neighbors for an instance
-import math
+import math, random, warnings
 import numpy as np
 import pandas as pd
 from math import sqrt
 from scipy.spatial import distance
+from collections import Counter
+
+def get_k_neighbors(fonts, predict, k, num_neighbors):
+    # if len(fonts) >= k:
+    #     warnings.warn('K is set to a value less than total voting groups!')
+    distances = []
+
+    for font in fonts.iterrows():
+        print('font: ',font)
+        for features in fonts[font]:
+            print('features: ',features)
+            euclidean_distance = np.linalg.norm(np.array(features)-np.array(predict))
+            distances.append([euclidean_distance,font])
+
+    similar = sorted(distances)
+    dissimilar = sorted(distances, reverse=True)
+
+    return similar[0:num_neighbors], dissimilar[0:num_neighbors]
 
 # calculate the Euclidean distance between two vectors
 def euclidean_distance(row1, row2):

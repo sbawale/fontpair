@@ -94,12 +94,13 @@ def get_font_vectors_tfidf(fonts, include_family):
     print("\ncreating new dataframe...\n")
     # print(fonts.head())
     # print(fonts.index.tolist())
-    font_dict = {}
+    # font_dict = {}
+    font_dict = pd.DataFrame()
     font_dict['name'] = fonts.index.tolist()
     font_dict['bag_of_words'] = bags_of_words
     font_dict['vector'] = vectors
 
-    font_dict = pd.DataFrame(font_dict)
+    # font_dict = pd.DataFrame(font_dict)
     font_dict['id'] = font_dict.index.tolist()
     # font_dict = pd.DataFrame(fonts.index.tolist(), columns=['name','bags_of_words','vectors','id'])
     # font_dict = fonts.index.tolist() #fonts['name']
@@ -107,7 +108,7 @@ def get_font_vectors_tfidf(fonts, include_family):
     # font_dict.insert(2, vectors)
     # font_dict.insert(3, font_dict.index.tolist())
     font_dict.set_index(font_dict['name'], drop=True, append=False, inplace=True, verify_integrity=False)
-    # font_dict.to_csv('vectortest.csv')
+    font_dict.to_csv('vectortest.csv')
     print("\ndataframe created!\n")
 
     return vectors, font_dict
