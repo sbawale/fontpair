@@ -1,0 +1,29 @@
+
+.welcome{
+    text-align: center;
+}
+
+.welcome, .texteditor{
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+div .texteditor{
+    margin: auto;
+/*        padding-left: 2em;
+    padding-right: 2em;*/
+    max-width: 850px;
+    text-align: justify;
+}
+
+h1, h4, p .texteditor{
+    padding-bottom: 1em;
+}
+
+p .texteditor{
+    line-height: 2;
+}
+
+button{
+    text-align:center;
+}

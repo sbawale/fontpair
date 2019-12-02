@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block page_content %}
+
+
+<h1>Families</h1>
+<div class="row">
+{% for family in families %}
+    <div class="col-md-4">
+        <div class="card mb-2">
+            <div class="card-body">
+                <h5 class="card-title">{{ family.name }}</h5>
+                <p class="card-text">{{ font.category }}</p>
+                <a href="{% url 'font_family' family.pk %}"
+                   class="btn btn-primary">
+                    Read More
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+

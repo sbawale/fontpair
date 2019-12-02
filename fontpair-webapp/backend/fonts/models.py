@@ -39,7 +39,7 @@ class FontPair(models.Model):
         return '({}, {})'.format(self.font1, self.font2)
 
 class Weight(models.Model):
-    weight = models.IntegerField(default=None, primary_key=True)
-    string = models.CharField(max_length=255, default=None, unique=True)
+    weight = models.IntegerField(default=None, unique=True)
+    string = models.CharField(max_length=255, default=None, primary_key=True)
     def __str_(self):
         return '{} ({})'.format(self.string, self.weight)

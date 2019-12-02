@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block page_content %}
+<div class="col-md-8 offset-md-2">
+    <h1>{{ family | name }}</h1>
+    <hr>
+    {% for font in fonts %}
+        <h2><a href="{% url 'font_detail' font.pk%}">{{ font.name }}</a></h2>
+        <small>
+            {{ font.created_on.date }} |&nbsp;
+            Categories:&nbsp;
+            {% for family in font.categories.all %}
+            <a href="{% url 'font_family' family.name %}">
+                {{ family.name }}
+            </a>&nbsp;
+            {% endfor %}
+        </small>
+        <!-- <p>{{ post.body | slice:":400" }}...</p> -->
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,9 +1,16 @@
 from django.shortcuts import render
+from rest_framework import viewsets
+from .models import *
+from .serializers import *
 
 # Create your views here.
-# *********** CATEGORIES ***********
+
+class CategoryAPI(viewsets.ModelViewSet):
+      serializer_class = CategorySerializer
+      queryset = Category.objects.all()
+
 def categories(request):
-    categories = Category.objects.all().order_by('category_name')
+    categories = Category.objects.all().order_by('name')
     context = {
         'categories': categories
     }

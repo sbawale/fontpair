@@ -35,7 +35,7 @@ def run():
             c.save()
 
     # Import weights
-    with open('data/test-weight.csv',mode='r',encoding='utf-8-sig') as csvfile_weights:
+    with open('data/weights.csv',mode='r',encoding='utf-8-sig') as csvfile_weights:
         reader = csv.DictReader(csvfile_weights)
         for row in reader:
             w = Weight(weight=row['weight'], string=row['string'])

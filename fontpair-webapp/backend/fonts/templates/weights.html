@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block page_content %}
+<!-- <div class="col-md-8 offset-md-2">
+    <h1>Weights</h1>
+    <hr>
+    {% for weight in weights %}
+    <h2><a href="{% url 'weights' font.pk%}">{{ weight.string }}</a></h2>
+    <small>
+        {{ font.created_on.date }} |&nbsp;
+        Weights:&nbsp;
+        {% for weight in font.weights.all %}
+        <a href="{% url 'font_weight' weight.string %}">
+            {{ weight.string }}
+        </a>&nbsp;
+        {% endfor %}
+    </small>
+    {% endfor %}
+</div> -->
+<h1>Weights</h1>
+<div class="row">
+{% for weight in weights %}
+    <div class="col-md-4">
+        <div class="card mb-2">
+            <!-- <img class="card-img-top" src="{% static font.image %}"> -->
+            <!-- <img class="card-img-top" src="https://www.gstatic.com/images/icons/material/apps/fonts/1x/opengraph_color_1200dp.png"> -->
+            <!-- <img class="card-img-top" src="./fonts/static/img/gf_logo.png"> -->
+            <div class="card-body">
+                <h5 class="card-title">{{ weight.string }}</h5>
+                <p class="card-text">{{ weight.weight }}</p>
+                <a href="{% url 'font_weight' weight.pk %}"
+                   class="btn btn-primary">
+                    Read More
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

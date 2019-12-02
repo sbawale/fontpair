@@ -1,11 +1,15 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 from .models import *
+from .serializers import *
 
 # Create your views here.
-# *********** FAMILIES ***********
+class FamilyAPI(viewsets.ModelViewSet):
+      serializer_class = FamilySerializer
+      queryset = Family.objects.all()
+
 def families(request):
-    families = Family.objects.all().order_by('family_name')
+    families = Family.objects.all().order_by('name')
     context = {
         'families': families
     }

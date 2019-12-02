@@ -1,11 +1,11 @@
 from django.contrib import admin
 from django.urls import path, include
 from .serializers import *
-from fonts import views
+from families import views
 
 urlpatterns = [
-    path("", views.fonts, name="fonts"),
-    path("<str:pk>/", views.font_detail, name="font_detail"),
+    path("", views.families, name="families"),
+    path("<family>/", views.font_family, name="font_family"),
     # path("families/", views.families, name="families"),
     # path("weights/", views.weights, name="weights"),
     # path('<weight>/', views.font_weight, name="font_weight"),

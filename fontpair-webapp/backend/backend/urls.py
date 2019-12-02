@@ -17,15 +17,21 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 from backend import views
+from fonts import views as font_views
+from families import views as family_views
+from categories import views as category_views
 
+# Add views for API
 router = routers.DefaultRouter()
-# router.register(r'fonts', views.FontView, 'fonts')
+router.register(r'fonts', font_views.FontAPI, 'fonts')
+router.register(r'families', family_views.FamilyAPI, 'families')
+router.register(r'categories', category_views.CategoryAPI, 'categories')
 
 urlpatterns = [
+    path('', views.index, name='index'),
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('', views.index, name='index'),
     path('fonts/', include('fonts.urls')),
-    # path('families/', include('families.urls')),
-    # path('categories/', include('categories.urls')),
+    path('families/', include('families.urls')),
+    path('categories/', include('categories.urls')),
 ]

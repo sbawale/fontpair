@@ -4,4 +4,4 @@ from .models import *
 class FontSerializer(serializers.ModelSerializer):
   class Meta:
     model = Font
-    fields = ('id', 'title', 'description', 'completed')
+    fields = ('name', 'family', 'category', 'is_body', 'is_serif', 'is_italic', 'weight', 'url')

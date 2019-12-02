@@ -1,14 +1,13 @@
 from django.shortcuts import render
-from rest_framework import viewsets          # add this
-from .serializers import *
+from rest_framework import viewsets
 from .models import *
+from .serializers import *
 
 # Create your views here.
 
-class TodoView(viewsets.ModelViewSet):       # add this
-      serializer_class = TodoSerializer          # add this
-      queryset = Todo.objects.all()
-
+class FontAPI(viewsets.ModelViewSet):
+      serializer_class = FontSerializer
+      queryset = Font.objects.all()
 
 # ********************** Recommender Views **********************
 def font_recommendation_list(request):

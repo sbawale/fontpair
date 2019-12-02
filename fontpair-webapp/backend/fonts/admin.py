@@ -8,4 +8,5 @@ class FontAdmin(admin.ModelAdmin):
     ordering = ('name',)
 
 admin.site.register(FontPair)
+admin.site.register(Weight)
 admin.site.register(Font, FontAdmin)
