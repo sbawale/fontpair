@@ -59,9 +59,10 @@
         <div class="similar">
             <h5>Similar fonts to {{ font.name }}:</h5>
             {% for sim in recs_sim %}
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family={{ sim.family }}">
             <ul>
-                <li>
-                    {{ sim.name }}
+                <li style="font-family: {{ sim.family }};">
+                    <a href="{% url 'font_detail' sim.pk %}">{{ sim.name }}</a>
                 </li>
             </ul>
             {% endfor %}
@@ -71,9 +72,10 @@
         <div class="dissimilar">
             <h5>Dissimilar fonts to {{ font.name }}:</h5>
             {% for diff in recs_diff %}
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family={{ diff.family }}">
             <ul>
-                <li>
-                    {{ diff.name }}
+                <li style="font-family: {{ diff.family }};">
+                    <a href="{% url 'font_detail' diff.pk %}">{{ diff.name }}</a>
                 </li>
             </ul>
             {% endfor %}
