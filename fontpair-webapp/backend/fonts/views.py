@@ -25,6 +25,7 @@ def recommender(request):
 # ********************** Individual Fonts **********************
 def fonts(request):
     fonts = Font.objects.all().order_by('name')
+    style = 'regular' # could create a dictionary and use for loop to populate w/ italic values
     context = {
         'fonts': fonts
     }
@@ -36,13 +37,22 @@ def font_detail(request, pk):
     vectors = joblib.load('data/vectors.pkl')
     knn = joblib.load('data/knn.pkl')
 
-    # Get specific font parameters
+    # Get specific font parameters for display
     font = Font.objects.get(pk=pk)
     recs_sim, recs_diff = Font.get_recommendations(font,fonts,vectors,knn,5)
+    weight_num = font.numeric_weight()
+    italic = font.italic()
+    style = 'normal'
+
+    if italic:
+        style = 'italic'
+
     context = {
         'font': font,
         'recs_sim': recs_sim,
-        'recs_diff': recs_diff
+        'recs_diff': recs_diff,
+        'weight_num': weight_num,
+        'style': style
     }
     return render(request, 'font_detail.html', context)
 

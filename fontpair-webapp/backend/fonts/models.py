@@ -37,7 +37,10 @@ class Font(models.Model):
         return name
         # return '{} {}'.format(self.family, self.category)
 
-    def numeric_weight():
+    def italic(self):
+        return self.is_italic
+
+    def numeric_weight(self):
         switcher = {
             'Thin':100,
             'Extra Light':200,
@@ -49,6 +52,7 @@ class Font(models.Model):
             'Extra Bold':800,
             'Black':900,
         }
+        return switcher.get(self.weight)
 
     def get_recommendations(font_obj,fonts,vectors,knn,num_recs):
         # Get font object and find corresponding vector
