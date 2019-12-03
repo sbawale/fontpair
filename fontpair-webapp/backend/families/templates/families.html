@@ -5,10 +5,11 @@
 <h1>Families</h1>
 <div class="row">
 {% for family in families %}
+<!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family={{ family.name }}"> -->
     <div class="col-md-4">
         <div class="card mb-2">
             <div class="card-body">
-                <h5 class="card-title">{{ family.name }}</h5>
+                <h5 class="card-title" style="font-family: {{ family.name }}">{{ family.name }}</h5>
                 <p class="card-text">{{ font.category }}</p>
                 <a href="{% url 'font_family' family.pk %}"
                    class="btn btn-primary">

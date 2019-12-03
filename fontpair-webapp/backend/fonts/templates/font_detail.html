@@ -2,8 +2,30 @@
 {% load static %}
 
 {% block page_content %}
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Font+Name">
+<link rel="stylesheet" href="{% static 'css/index.css' %}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family={{ font.family }}">
 
+<style type="text/css">
+    h1, .texteditor{
+        font-family: {{ font.family }};
+        font-weight: {{ font.weight }};
+        min-width: 600px;
+    }
+
+    .recommendations {
+        min-with: 800px;
+    }
+
+    .gf-link{
+
+    }
+
+    a:hover {
+        text-decoration: none;
+    }
+</style>
+
+<br>
 <h1>{{ font.name }}</h1>
 <div class="row">
 <!--     <div class="col-md-8">
@@ -12,13 +34,50 @@
     <div class="col-md-4">
         <br>
         <h5>Family:</h5>
-        <p>{{ font.family }}</p>
+        <p><a href="">{{ font.family }}</a></p>
         <h5>Category:</h5>
-        <p>{{ font.category }}</p>
+        <p><a href="">{{ font.category }}</a></p>
         <h5>Weight:</h5>
         <p>{{ font.weight }}</p>
         <br>
-        <h5><a href={{ font.url }}>See {{ font.name }} on Google Fonts</a></h5>
+        <br>
+        <h5 class="gf-link"><a href={{ font.url }}>See {{ font.name }} on Google Fonts</a></h5>
+    </div>
+    <div class="col-md-4">
+        <br>
+        <div contenteditable="true" class="texteditor">
+            <h3>Sample text in this font.</h3>
+            <br>
+            <p>The quick brown fox jumps over the lazy dog</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        </div>
+    </div>
+</div>
+<br><br>
+<div class="row recommendations">
+    <div class="col-md-4">
+        <div class="similar">
+            <h5>Similar fonts to {{ font.name }}:</h5>
+            {% for sim in recs_sim %}
+            <ul>
+                <li>
+                    {{ sim.name }}
+                </li>
+            </ul>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="dissimilar">
+            <h5>Dissimilar fonts to {{ font.name }}:</h5>
+            {% for diff in recs_diff %}
+            <ul>
+                <li>
+                    {{ diff.name }}
+                </li>
+            </ul>
+            {% endfor %}
+        </div>
     </div>
 </div>
 {% endblock %}

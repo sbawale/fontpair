@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework import viewsets
+import joblib
 from .models import *
 from .serializers import *
 
@@ -30,9 +31,18 @@ def fonts(request):
     return render(request, 'fonts.html', context)
 
 def font_detail(request, pk):
+    # Load pickle files
+    fonts = joblib.load('data/fonts.pkl')
+    vectors = joblib.load('data/vectors.pkl')
+    knn = joblib.load('data/knn.pkl')
+
+    # Get specific font parameters
     font = Font.objects.get(pk=pk)
+    recs_sim, recs_diff = Font.get_recommendations(font,fonts,vectors,knn,5)
     context = {
-        'font': font
+        'font': font,
+        'recs_sim': recs_sim,
+        'recs_diff': recs_diff
     }
     return render(request, 'font_detail.html', context)
 
