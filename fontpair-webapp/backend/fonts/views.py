@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from rest_framework import viewsets
 import joblib
 from .models import *
@@ -10,22 +11,20 @@ class FontAPI(viewsets.ModelViewSet):
       serializer_class = FontSerializer
       queryset = Font.objects.all()
 
-# ********************** Recommender Views **********************
-def font_recommendation_list(request):
-    return render(request, 'font_recommendation_list.html')
-
-def recommender(request):
-    fonts = Font.objects.all().order_by('name')
-    context = {
-        'fonts': fonts
-    }
-    return render(request, 'recommender.html', context)
-
-
 # ********************** Individual Fonts **********************
 def fonts(request):
-    fonts = Font.objects.all().order_by('name')
+    font_list = Font.objects.all().order_by('name')
     style = 'regular' # could create a dictionary and use for loop to populate w/ italic values
+    page = request.GET.get('page', 1)
+    paginator = Paginator(font_list, 20)
+
+    try:
+        fonts = paginator.page(page)
+    except PageNotAnInteger:
+        fonts = paginator.page(1)
+    except EmptyPage:
+        fonts = paginator.page(paginator.num_pages)
+
     context = {
         'fonts': fonts
     }
@@ -56,7 +55,18 @@ def font_detail(request, pk):
     }
     return render(request, 'font_detail.html', context)
 
-# *********** WEIGHTS ***********
+# ********************** recommendations **********************
+# def font_recommendation_list(request):
+#     return render(request, 'font_recommendation_list.html')
+
+# def recommender(request):
+#     fonts = Font.objects.all().order_by('name')
+#     context = {
+#         'fonts': fonts
+#     }
+#     return render(request, 'recommender.html', context)
+
+# *********** weights ***********
 def weights(request):
     weights = Weight.objects.all().order_by('weight')
     context = {

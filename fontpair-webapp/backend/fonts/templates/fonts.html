@@ -2,26 +2,121 @@
 {% load static %}
 {% block page_content %}
 
-<script type="text/javascript">
-$(document).ready(function() {
-    $('#example').DataTable( {
-        "paging":   true,
-        "ordering": false,
-        "info":     false,
-        "pageLength": 50
-    } );
-} );
-</script>
-
 <h1>Fonts</h1>
-<div class="row" id="example">
+<table id="font_list" class="table">
+    <thead>
+        <tr>
+            <th>Font</th>
+            <th>Category</th>
+            <th>Edit Me!</th>
+            <th>Details</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for font in fonts %}
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family={{ font.family }}">
+        <tr>
+            <td style="font-family: {{ font.family }};">{{ font.name }}</td>
+            <td>{{ font.category }}</td>
+            <td contenteditable="true" style="font-family: {{ font.family }};">Edit this sentence!</td>
+            <td><a href="{% url 'font_detail' font.pk %}"class="btn btn-primary">Details</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if fonts.has_other_pages %}
+<nav aria-label="Font list pagination">
+  <ul class="pagination">
+    <!-- Begin previous buttons -->
+    {% if fonts.has_previous %}
+
+    <li class="page-item">
+        <a class="page-link" href="?page=1" aria-label="First">
+        <span aria-hidden="true">&laquo;</span>
+        <span class="sr-only">First</span>
+      </a>
+    </li>
+    <li class="page-item">
+      <a class="page-link" href="?page={{ fonts.previous_page_number }}" aria-label="Previous">
+        <span aria-hidden="true">&lsaquo;</span>
+        <span class="sr-only">Previous</span>
+      </a>
+    </li>
+    {% endif %}
+    <!-- End previous buttons -->
+
+    <!-- Limit number of pages to show -->
+    {% for num in fonts.paginator.page_range %}
+        {% if fonts.number == num %}
+        <li class="page-item active"><span class="pagination-number pagination-current page-link">{{ num }}</span></li>
+        {% elif num > fonts.number|add:'-15' and num < fonts.number|add:'15' %}
+            <li class="page-item"><a class="pagination-number page-link" href="?page={{ num }}">{{ num }}</a></li>
+        {% endif %}
+
+      {% endfor %}
+
+    <!-- Begin next button -->
+    {% if fonts.has_next %}
+    <li class="page-item">
+      <a class="page-link" href="?page={{ fonts.next_page_number }}" aria-label="Next">
+        <span aria-hidden="true">&rsaquo;</span>
+        <span class="sr-only">Next</span>
+      </a>
+    </li>
+        <li class="page-item">
+      <a class="page-link" href="?page={{ fonts.paginator.num_pages }}" aria-label="Last">
+        <span aria-hidden="true">&raquo;</span>
+        <span class="sr-only">Last</span>
+      </a>
+    </li>
+    {% endif %}
+    <!-- End next button -->
+  </ul>
+</nav>
+{% endif %}
+
+
+
+
+
+<!-- {% if fonts.has_other_pages %}
+  <div class="pagination">
+    {% if fonts.has_previous %}
+        <a class="pagination-action" href="?page=1">
+         <span><<</span>
+        </a>
+        <a class="pagination-action" href="?page={{ fonts.previous_page_number }}">
+          <span><</span>
+        </a>
+    {% endif %}
+
+      {% for num in fonts.paginator.page_range %}
+
+        {% if fonts.number == num %}
+        <span class="pagination-number pagination-current">{{ num }}</span>
+        {% elif num > fonts.number|add:'-10' and num < fonts.number|add:'10' %}
+        <a class="pagination-number" href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+
+      {% endfor %}
+
+      {% if fonts.has_next %}
+        <a class="pagination-action" href="?page={{ fonts.next_page_number }}">
+          <span>></span>
+        </a>
+        <a class="pagination-action" href="?page={{ fonts.paginator.num_pages }}">
+          <span>>></span>
+        </a>
+      {% endif %}
+  </div>
+{% endif %} -->
+
+<!-- <div class="row" id="example">
 {% for font in fonts %}
-<!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family={{ font.family }}"> -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family={{ font.family }}">
     <div class="col-md-4">
         <div class="card mb-2">
-            <!-- <img class="card-img-top" src="{% static font.image %}"> -->
-            <!-- <img class="card-img-top" src="https://www.gstatic.com/images/icons/material/apps/fonts/1x/opengraph_color_1200dp.png"> -->
-            <!-- <img class="card-img-top" src="./fonts/static/img/gf_logo.png"> -->
             <div class="card-body">
                 <h5 class="card-title" style="font-family: {{ font.family }}">{{ font.name }}</h5>
                 <p class="card-text">{{ font.category }}</p>
@@ -33,18 +128,5 @@ $(document).ready(function() {
         </div>
     </div>
     {% endfor %}
-</div>
-<nav aria-label="Page navigation example">
-  <ul class="pagination justify-content-center">
-    <li class="page-item disabled">
-      <a class="page-link" href="#" tabindex="-1">Previous</a>
-    </li>
-    <li class="page-item"><a class="page-link" href="#">1</a></li>
-    <li class="page-item"><a class="page-link" href="#">2</a></li>
-    <li class="page-item"><a class="page-link" href="#">3</a></li>
-    <li class="page-item">
-      <a class="page-link" href="#">Next</a>
-    </li>
-  </ul>
-</nav>
+</div> -->
 {% endblock %}
