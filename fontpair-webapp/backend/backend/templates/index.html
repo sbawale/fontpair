@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block page_content %}
 
 <style type="text/css">
@@ -17,6 +18,7 @@
         padding-right: 2em;*/
         max-width: 850px;
         text-align: justify;
+        margin-bottom: 3em;
     }
 
     h1, h, p .texteditor{
@@ -27,14 +29,18 @@
         line-height: 2;
     }
 
-    button{
+    button.random-combo{
         text-align:center;
-        margin:auto;
-        display:block;
+        margin:auto!important;
+        display:block!important;
+        padding: 1em;
+        margin-bottom: 3em;
     }
 </style>
 <br>
-<h2 class="welcome">Welcome message of some sort...</h2>
+<h4 class="welcome">All the text below is editable - feel free to add your own content and play with font combinations! Or, if you're lazy like me, you can generate random font combinations by clicking the big blue button below. This is done by choosing a random font for the body text, then using random matches for the headings.</h4>
+<br>
+<button class="btn btn-primary random-combo">Random Font Combination</button>
 <br>
 <div contenteditable="true" class="texteditor">
     <h1>This is a heading!</h1>
@@ -44,7 +50,6 @@
   <p>This is body text that can be edited by the user.</p>
   <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
   <br>
-  <button>Random Font Combination</button>
 </div>
 
 

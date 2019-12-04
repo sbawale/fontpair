@@ -17,6 +17,7 @@ def categories(request):
     return render(request, 'categories.html', context)
 
 def font_category(request, category):
+    # Use lists of families instead
     fonts = Font.objects.filter(
         categories__name__contains=category).order_by('name')
     context = {
