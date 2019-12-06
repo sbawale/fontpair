@@ -3,19 +3,18 @@
 
 {% block page_content %}
 <link rel="stylesheet" href="{% static 'css/detail_page.css' %}">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family={{ font.family }}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family={{ font.family.name }}">
 
 <style type="text/css">
-    h1, .texteditor{
+    .use-font{
         font-family: {{ font.family.name }};
         font-weight: {{ font.weight_num }};
         font-style: {{ style }};
-        min-width: 600px;
     }
 </style>
 
 <br>
-<h1>{{ font.name }}</h1>
+<h1 class="use-font">{{ font.name }}</h1>
 <div class="row">
     <div class="col-md-4">
         <br>
@@ -27,11 +26,11 @@
         <p>{{ font.weight_str }}</p>
         <br>
 
-        <button class="gf-link btn btn-outline-primary" a href={{ font.family.url }}>See on Google Fonts</button>
+        <a class="gf-link btn btn-outline-primary" a href={{ font.family.url }}>See on Google Fonts</a>
     </div>
     <div class="col-md-4">
         <br>
-        <div contenteditable="true" class="texteditor">
+        <div contenteditable="true" class="use-font texteditor">
             <h3>Sample text in this font.</h3>
             <br>
             <p>The quick brown fox jumps over the lazy dog</p>

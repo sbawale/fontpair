@@ -7,18 +7,17 @@
 
 <style type="text/css">
     h1, .texteditor{
-        /*font-family: {{ family.name }};*/
         min-width: 600px;
     }
 </style>
 
 <br>
-<h1>{{ category.name }}</h1>
+<h1>{{ category.name }}<a class="gf-link btn btn-outline-primary" a href="https://fonts.google.com/?category={{ category.name }}" style="margin-left:2em;">See on Google Fonts</a></h1>
 <div class="row">
     <div class="col-md-4">
         <br>
-        <button class="gf-link btn btn-outline-primary" a href="https://fonts.google.com/?category= {{ category.name }}">See on Google Fonts</button>
-        <br><br>
+<!--         <a class="gf-link btn btn-outline-primary" a href="https://fonts.google.com/?category={{ category.name }}">See on Google Fonts</a>
+        <br><br> -->
         <h5>Families:</h5>
             {% for family in families %}
                 <a href="{% url 'family' family.pk %}">{{ family.name }}</a>
@@ -40,13 +39,5 @@
     </div>
 </div>
 <br><br>
-<div class="row recommendations">
-    <div class="col-md-4">
-
-    </div>
-    <div class="col-md-4">
-
-    </div>
-</div>
 <br><br><br>
 {% endblock %}

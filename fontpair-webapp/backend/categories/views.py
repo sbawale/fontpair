@@ -22,7 +22,7 @@ def categories(request):
 
 def category(request, pk):
     # Use lists of families instead
-    category = Category.objects.filter(pk=pk)
+    category = Category.objects.get(pk=pk)
     families = Family.objects.filter(category__pk=pk)
     num_families = len(families)
     last_family = families[num_families-1]

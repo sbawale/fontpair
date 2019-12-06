@@ -1,15 +1,17 @@
 {% extends "base.html" %}
+{% load static %}
 {% block page_content %}
 
 <h1>Families</h1>
+<br>
 <div class="row">
 {% for family in families %}
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family={{ family.name }}">
     <div class="col-md-3">
-        <div class="card mb-2">
+        <div class="card mb-2" style="text-align: center;">
             <div class="card-body">
                 <h5 class="card-title" style="font-family: {{ family.name }}">{{ family.name }}</h5>
-                <p class="card-text">{{ family.category.name }}</p>
+                <p class="card-text" style="font-size: 0.85em; color:gray;">{{ family.category.name }}</p>
                 <a href="{% url 'family' family.pk %}" class="btn btn-primary">Fonts</a>
             </div>
         </div>

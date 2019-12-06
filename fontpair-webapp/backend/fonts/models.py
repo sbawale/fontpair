@@ -1,7 +1,5 @@
 import joblib
 import numpy as np
-# from import_export import fields, resources
-# from import_export.widgets import ForeignKeyWidget
 from django.db import models
 from families import models as fm
 from categories import models as cm
@@ -9,12 +7,8 @@ from categories import models as cm
 # Create your models here.
 class Font(models.Model):
     name = models.CharField(max_length=255, default=None, primary_key=True)
-    # family = models.CharField(max_length=255, default=None)
     family = models.ForeignKey(fm.Family, on_delete=models.CASCADE)
-    # family = ForeignKeyWidget(models_fam.Family, 'name')
-    # category = models.CharField(max_length=255, default=None)
     category = models.ForeignKey(cm.Category, on_delete=models.CASCADE)
-    # category = ForeignKeyWidget(models_cat.Category, 'name')
     is_body = models.BooleanField(default=True)
     is_serif = models.BooleanField(default=True)
     is_italic = models.BooleanField(default=False)
@@ -70,23 +64,3 @@ class Font(models.Model):
 
         # return full_recs, similar, dissimilar
         return recs_sim, recs_diff
-
-# class FontPair(models.Model):
-#     font1 = models.ForeignKey(Font, related_name='font1', on_delete=models.CASCADE)
-#     font2 = models.ForeignKey(Font, related_name='font2', on_delete=models.CASCADE)
-
-#     class Meta:
-#         verbose_name_plural = "Pairings"
-
-#     def __str_(self):
-#         return '({}, {})'.format(self.font1, self.font2)
-
-# class Weight(models.Model):
-#     weight = models.IntegerField(default=None, unique=True)
-#     string = models.CharField(max_length=255, default=None, primary_key=True)
-
-#     class Meta:
-#         ordering = ['weight']
-
-#     def __str_(self):
-#         return '{} ({})'.format(self.string, self.weight)
