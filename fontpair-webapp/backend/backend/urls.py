@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework import routers
 from backend import views
@@ -35,4 +36,5 @@ urlpatterns = [
     path('fonts/', include('fonts.urls')),
     path('families/', include('families.urls')),
     path('categories/', include('categories.urls')),
-]
+    path('match_font/', font_views.match_font, name="match_font")
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

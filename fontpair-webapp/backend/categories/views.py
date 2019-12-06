@@ -1,13 +1,15 @@
 from django.shortcuts import render
-from rest_framework import viewsets
+from rest_framework import viewsets, filters
 from .models import *
 from .serializers import *
 
 # Create your views here.
 
 class CategoryAPI(viewsets.ModelViewSet):
-      serializer_class = CategorySerializer
-      queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    queryset = Category.objects.all()
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name']
 
 def categories(request):
     categories = Category.objects.all().order_by('name')
@@ -16,12 +18,10 @@ def categories(request):
     }
     return render(request, 'categories.html', context)
 
-def font_category(request, category):
+def category(request, cat):
     # Use lists of families instead
-    fonts = Font.objects.filter(
-        categories__name__contains=category).order_by('name')
+    categories = Category.objects.filter(name=cat)
     context = {
-        "category": category,
-        "fonts": fonts
+        "categories": categories
     }
-    return render(request, "font_category.html", context)
+    return render(request, "category.html", context)

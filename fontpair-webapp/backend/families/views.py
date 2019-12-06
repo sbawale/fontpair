@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework import viewsets
+from rest_framework import viewsets, filters
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import *
 from .serializers import *
@@ -7,8 +7,10 @@ from fonts.models import *
 
 # Create your views here.
 class FamilyAPI(viewsets.ModelViewSet):
-      serializer_class = FamilySerializer
-      queryset = Family.objects.all()
+    serializer_class = FamilySerializer
+    queryset = Family.objects.all()
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name']
 
 def families(request):
     family_list = Family.objects.all().order_by('name')
@@ -26,11 +28,11 @@ def families(request):
     }
     return render(request, 'families.html', context)
 
-def font_family(request, family):
-    fonts = Font.objects.filter(
-        families__name__contains=family).order_by('name')
+def family(request, fam):
+    # fonts = Font.objects.filter(
+    #     family__name__contains=family).order_by('name')
+    family = Family.objects.get(pk=fam)
     context = {
         "family": family,
-        "fonts": fonts
     }
-    return render(request, "font_family.html", context)
+    return render(request, "family.html", context)

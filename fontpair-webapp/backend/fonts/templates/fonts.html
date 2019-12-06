@@ -2,7 +2,15 @@
 {% load static %}
 {% block page_content %}
 
+<style type="text/css">
+    td:focus{
+        outline: none;
+    }
+</style>
+
+<!-- Begin font list -->
 <h1>Fonts</h1>
+<br>
 <table id="font_list" class="table">
     <thead>
         <tr>
@@ -14,17 +22,25 @@
     </thead>
     <tbody>
         {% for font in fonts %}
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family={{ font.family }}">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family={{ font.family.name }}">
         <tr>
-            <td style="font-family: {{ font.family }};">{{ font.name }}</td>
-            <td>{{ font.category }}</td>
-            <td contenteditable="true" style="font-family: {{ font.family }};">Edit this sentence!</td>
+            <td class = "{{ font.name }}"
+            style="font-family: {{ font.family.name }};
+                  font-weight: {{ font.weight_num  }};
+                  {% if font.is_italic %}
+                    font-style: italic;
+                  {% endif %}">{{ font.name }}</td>
+            <td>{{ font.category.name }}</td>
+            <!-- Generate random sentences instead? -->
+            <td class = "{{ font.name }}" contenteditable="true" style="font-family: {{ font.family.name }};"><div class="texteditor">Edit this sentence!</div></td>
             <td><a href="{% url 'font_detail' font.pk %}"class="btn btn-primary">Details</a></td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+<!-- End font list -->
 
+<!-- Begin pagination -->
 {% if fonts.has_other_pages %}
 <nav aria-label="Font list pagination">
   <ul class="pagination">
@@ -75,7 +91,7 @@
   </ul>
 </nav>
 {% endif %}
-
+<!-- End pagination -->
 
 
 

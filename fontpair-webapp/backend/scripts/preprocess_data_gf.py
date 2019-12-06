@@ -42,13 +42,13 @@ def get_unique_strings(dataset,feature_index):
                 unique.append(word)
     return unique
 
-def preprocess_data_gf():
+def run():
     # Initialize font list, column/feature names, array of font weights, and get ambiguous families
     google_fonts = []
     [families,serifs] = get_unlabeled_families('data/label_by_hand.csv')
-    col_names =  ['name','family','category','is_body','is_serif','is_italic','weight','url']
-    font_weights = ['thin','extralight','light','regular','medium','semibold','bold','extrabold','black']
-    font_weights_num = [100, 200, 300, 400, 500, 600, 700, 800, 900]
+    cols =  ['name','family','category','is_body','is_serif','is_italic','weight_num','weight_str','url']
+    fweights = [100, 200, 300, 400, 500, 600, 700, 800, 900]
+    fweights_str = ['Thin','Extra Light','Light','Regular','Medium','Semi Bold','Bold','Extra Bold','Black']
 
     # *************** IMPORT AND RESTRUCTURE GOOGLE FONTS DATA ***************
 
@@ -69,8 +69,9 @@ def preprocess_data_gf():
             category = font['category'].strip()
             is_body = int(category != 'display')
             is_serif = check_if_serif(family.lower(),category)
-            is_italic = 0 # default is 0: not is_italic
-            weight = 'regular' # default is 400: regular
+            is_italic = 0 # default is 0: roman/not italic
+            weight_num = 400 # default is 400: regular
+            weight_str = 'Regular'
             url = 'http://fonts.google.com/specimen/' + font['family'].replace(' ','+')
 
             # Get serif status for fonts with is_serif = -1
@@ -85,21 +86,27 @@ def preprocess_data_gf():
                 for var in variants:
                     # Get weight
                     var_weight = var.split("00")
+
                     if len(var_weight) == 1:
                         weight = 400
                     else:
                         weight = int(var_weight[0])*100
 
-                    # Get name based on weight
-                    weight_idx = int((weight/100)-1)
-                    name = family + " " + str(weight)
-                    weight = font_weights[weight_idx]
+                    # Set both weight variables
+                    w_idx = int((weight/100)-1)
+                    weight_str = fweights_str[w_idx]
+                    weight_num = weight
+
+                    # name = family + " " + weight_str
+                    name = family + " " + str(weight_num)
 
                     # Check if is_italic
                     if 'italic' in var_weight:
                         is_italic = 1
                         # is_italic = 'italic'
                         name = name + " Italic"
+                    else:
+                        is_italic = 0
 
                     # Create tuple to be appended to list
                     current = {}
@@ -109,7 +116,8 @@ def preprocess_data_gf():
                     current['is_body'] = is_body
                     current['is_serif'] = is_serif
                     current['is_italic'] = is_italic
-                    current['weight'] = weight
+                    current['weight_num'] = weight_num
+                    current['weight_str'] = weight_str
                     current['url'] = url
 
                     # Print to console and append to google_fonts list
@@ -126,7 +134,8 @@ def preprocess_data_gf():
                 current['is_body'] = is_body
                 current['is_serif'] = is_serif
                 current['is_italic'] = is_italic
-                current['weight'] = weight
+                current['weight_num'] = weight_num
+                current['weight_str'] = weight_str
                 current['url'] = url
 
                 # Print to console and append to google_fonts list
@@ -136,9 +145,9 @@ def preprocess_data_gf():
     # *************** STANDARDIZE AND RETURN DATA ***************
 
     # Convert gf list to dataframe and add index column
-    google_fonts_df = pd.DataFrame(google_fonts,columns=col_names)
+    google_fonts_df = pd.DataFrame(google_fonts,columns=cols)
     google_fonts_df['idx'] = google_fonts_df.index.tolist()
-    google_fonts_df.to_csv(r'cleanedGF.csv', index=None, header=True)
+    google_fonts_df.to_csv(r'data/cleaned_data_gf.csv', index=None, header=True)
     google_fonts_df.set_index('name',drop=True, append=False,inplace=True)
 
     print('Google Fonts data successfully processed!\n')

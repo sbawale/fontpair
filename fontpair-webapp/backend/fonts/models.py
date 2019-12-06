@@ -1,58 +1,44 @@
-from django.db import models
 import joblib
 import numpy as np
-from families import models as models_fam
-from categories import models as models_cat
+# from import_export import fields, resources
+# from import_export.widgets import ForeignKeyWidget
+from django.db import models
+from families import models as fm
+from categories import models as cm
 
 # Create your models here.
 class Font(models.Model):
-    WEIGHTS = (
-        ('thin', 'Thin'),
-        ('extralight', 'Extra Light'),
-        ('light', 'Light'),
-        ('regular', 'Regular'),
-        ('medium', 'Medium'),
-        ('semibold', 'Semi Bold'),
-        ('bold', 'Bold'),
-        ('extrabold', 'Extra Bold'),
-        ('black', 'Black'),
-    )
-
     name = models.CharField(max_length=255, default=None, primary_key=True)
-    family = models.CharField(max_length=255, default=None)
-    # family = models.ForeignKey(Family, 'related_name'='family', on_delete=models.CASCADE)
-    category = models.CharField(max_length=255, default=None)
-    # category = models.ForeignKey(Category, 'related_name'='category', on_delete=models.CASCADE)
+    # family = models.CharField(max_length=255, default=None)
+    family = models.ForeignKey(fm.Family, on_delete=models.CASCADE)
+    # family = ForeignKeyWidget(models_fam.Family, 'name')
+    # category = models.CharField(max_length=255, default=None)
+    category = models.ForeignKey(cm.Category, on_delete=models.CASCADE)
+    # category = ForeignKeyWidget(models_cat.Category, 'name')
     is_body = models.BooleanField(default=True)
     is_serif = models.BooleanField(default=True)
     is_italic = models.BooleanField(default=False)
-    # weight = models.ManyToManyField('FontWeight', 'related_name=name')
-    weight = models.CharField(max_length=20, choices=WEIGHTS, default='regular')
-    url = models.URLField()
+    weight_num = models.IntegerField(default=400)
+    weight_str = models.CharField(max_length=20, default='regular')
 
     class Meta:
         ordering = ['name']
 
     def __str_(self):
         return name
-        # return '{} {}'.format(self.family, self.category)
 
-    def italic(self):
-        return self.is_italic
+    # def get_family(self):
+    #     family_obj = models_fam.Family.objects.get(pk=self.family)
+    #     return family_obj
 
-    def numeric_weight(self):
-        switcher = {
-            'Thin':100,
-            'Extra Light':200,
-            'Light':300,
-            'Regular':400,
-            'Medium':500,
-            'Semi Bold':600,
-            'Bold':700,
-            'Extra Bold':800,
-            'Black':900,
-        }
-        return switcher.get(self.weight)
+    # def get_category(self):
+    #     category_obj = models_cat.Category.objects.get(pk=self.category)
+    #     return category_obj
+
+    def get_random(self, items=1):
+        if isinstance(items, int):
+            return self.model.objects.order_by('?')[:items]
+        return self.all()
 
     def get_recommendations(font_obj,fonts,vectors,knn,num_recs):
         # Get font object and find corresponding vector
@@ -70,7 +56,7 @@ class Font(models.Model):
         similar = []
         dissimilar = []
         for i in range(0,num_recs):
-            curr_sim = sim_vectors[i]
+            curr_sim = sim_vectors[i+1] # exclude self from recommendation list
             curr_dis = diff_vectors[i]
 
             print(fonts.iloc[curr_sim].name)
@@ -93,22 +79,22 @@ class Font(models.Model):
         # return full_recs, similar, dissimilar
         return recs_sim, recs_diff
 
-class FontPair(models.Model):
-    font1 = models.ForeignKey(Font, related_name='font1', on_delete=models.CASCADE)
-    font2 = models.ForeignKey(Font, related_name='font2', on_delete=models.CASCADE)
+# class FontPair(models.Model):
+#     font1 = models.ForeignKey(Font, related_name='font1', on_delete=models.CASCADE)
+#     font2 = models.ForeignKey(Font, related_name='font2', on_delete=models.CASCADE)
 
-    class Meta:
-        verbose_name_plural = "Pairings"
+#     class Meta:
+#         verbose_name_plural = "Pairings"
 
-    def __str_(self):
-        return '({}, {})'.format(self.font1, self.font2)
+#     def __str_(self):
+#         return '({}, {})'.format(self.font1, self.font2)
 
-class Weight(models.Model):
-    weight = models.IntegerField(default=None, unique=True)
-    string = models.CharField(max_length=255, default=None, primary_key=True)
+# class Weight(models.Model):
+#     weight = models.IntegerField(default=None, unique=True)
+#     string = models.CharField(max_length=255, default=None, primary_key=True)
 
-    class Meta:
-        ordering = ['weight']
+#     class Meta:
+#         ordering = ['weight']
 
-    def __str_(self):
-        return '{} ({})'.format(self.string, self.weight)
+#     def __str_(self):
+#         return '{} ({})'.format(self.string, self.weight)

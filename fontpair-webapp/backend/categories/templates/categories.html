@@ -9,7 +9,7 @@
         <div class="card mb-2">
             <div class="card-body">
                 <h5 class="card-title">{{ category.name }}</h5>
-                <p class="card-text">{{ font.category }}</p>
+                <p class="card-text">{{ font.category.name }}</p>
                 <a href="{% url 'font_category' category.pk %}"
                    class="btn btn-primary">
                     Read More
@@ -20,3 +20,5 @@
     {% endfor %}
 </div>
 {% endblock %}
+
+<!-- Add pagination -->

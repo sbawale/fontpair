@@ -9,8 +9,8 @@
         <div class="card mb-2">
             <div class="card-body">
                 <h5 class="card-title" style="font-family: {{ family.name }}">{{ family.name }}</h5>
-                <p class="card-text">{{ font.category }}</p>
-                <a href="{% url 'font_family' family.pk %}"
+                <p class="card-text">{{ family.category }}</p>
+                <a href="{% url 'family' family.pk %}"
                    class="btn btn-primary">
                     Fonts
                 </a>

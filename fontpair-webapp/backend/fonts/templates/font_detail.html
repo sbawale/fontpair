@@ -6,9 +6,12 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family={{ font.family }}">
 
 <style type="text/css">
+    .col-md-4{
+        margin-right: 2em;
+    }
     h1, .texteditor{
-        font-family: {{ font.family }};
-        font-weight: {{ weight_num }};
+        font-family: {{ font.family.name }};
+        font-weight: {{ font.weight_num }};
         font-style: {{ style }};
         min-width: 600px;
     }
@@ -17,12 +20,16 @@
         min-with: 800px;
     }
 
-    .gf-link{
-
+    div .texteditor:focus{
+        outline: none;
     }
 
     a:hover {
         text-decoration: none;
+    }
+
+    h5 {
+        margin-bottom: 1em;
     }
 </style>
 
@@ -32,14 +39,14 @@
     <div class="col-md-4">
         <br>
         <h5>Family:</h5>
-        <p><a href="">{{ font.family }}</a></p>
+        <p><a href="{% url 'family' font.family.pk %}">{{ font.family.name }}</a></p>
         <h5>Category:</h5>
-        <p><a href="">{{ font.category }}</a></p>
+        <p><a href="{% url 'category' font.category.pk %}">{{ font.category.name }}</a></p>
         <h5>Weight:</h5>
-        <p>{{ font.weight }}</p>
+        <p>{{ font.weight_str }}</p>
         <br>
-        <br>
-        <h5 class="gf-link"><a href={{ font.url }}>See {{ font.name }} on Google Fonts</a></h5>
+
+        <button class="gf-link btn btn-outline-primary" a href={{ font.family.url }}>See on Google Fonts</button>
     </div>
     <div class="col-md-4">
         <br>
@@ -57,10 +64,15 @@
         <div class="similar">
             <h5>Similar fonts to {{ font.name }}:</h5>
             {% for sim in recs_sim %}
-            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family={{ sim.family }}">
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family={{ sim.family.name }}">
             <ul>
-                <li style="font-family: {{ sim.family }};">
-                    <a href="{% url 'font_detail' sim.pk %}">{{ sim.name }}</a>
+                <li>
+                    <a href="{% url 'font_detail' sim.pk %}"
+                    style="font-family: {{ sim.family.name }};
+                    font-weight: {{ font.weight_num  }};
+                    {% if sim.is_italic %}
+                        font-style: italic;
+                    {% endif %}">{{ sim.name }}</a>
                 </li>
             </ul>
             {% endfor %}
@@ -70,14 +82,19 @@
         <div class="dissimilar">
             <h5>Dissimilar fonts to {{ font.name }}:</h5>
             {% for diff in recs_diff %}
-            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family={{ diff.family }}">
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family={{ diff.family.name }}">
             <ul>
-                <li style="font-family: {{ diff.family }};">
-                    <a href="{% url 'font_detail' diff.pk %}">{{ diff.name }}</a>
+                <li>
+                    <a href="{% url 'font_detail' diff.pk %}"
+                    style="font-family: {{ diff.family.name }};
+                    {% if diff.is_italic %}
+                        font-style: italic;
+                    {% endif %}">{{ diff.name }}</a>
                 </li>
             </ul>
             {% endfor %}
         </div>
     </div>
 </div>
+<br><br><br>
 {% endblock %}
