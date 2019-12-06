@@ -9,11 +9,8 @@
         <div class="card mb-2">
             <div class="card-body">
                 <h5 class="card-title" style="font-family: {{ family.name }}">{{ family.name }}</h5>
-                <p class="card-text">{{ family.category }}</p>
-                <a href="{% url 'family' family.pk %}"
-                   class="btn btn-primary">
-                    Fonts
-                </a>
+                <p class="card-text">{{ family.category.name }}</p>
+                <a href="{% url 'family' family.pk %}" class="btn btn-primary">Fonts</a>
             </div>
         </div>
     </div>
@@ -21,7 +18,7 @@
 </div>
 
 {% if families.has_other_pages %}
-<nav aria-label="Font list pagination">
+<nav aria-label="Family list pagination">
   <ul class="pagination">
     <!-- Begin previous buttons -->
     {% if families.has_previous %}

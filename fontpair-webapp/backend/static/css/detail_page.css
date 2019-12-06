@@ -1,0 +1,24 @@
+* {
+    color: red;
+}
+
+.col-md-4{
+    margin-right: 2em;
+}
+h1, .texteditor{
+    font-family: {{ family.name }};
+    font-style: {{ style }};
+    min-width: 600px;
+}
+
+div.recommendations {
+    min-with: 800px;
+}
+
+div .texteditor:focus{
+    outline: none;
+}
+
+h5 {
+    margin-bottom: 1em;
+}

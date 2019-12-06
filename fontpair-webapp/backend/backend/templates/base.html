@@ -11,7 +11,7 @@
   <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script> -->
 
   <!-- Custom CSS -->
-  <!-- <link rel="stylesheet" href="{% static 'css/index.css' %}"> -->
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
 
   <!-- Required meta tags -->
   <meta charset="utf-8">
@@ -51,7 +51,8 @@
 </nav>
 <br>
 <div class="container">
-    {% block page_content %}{% endblock %}
+    {% block page_content %}
+    {% endblock %}
 </div>
 
 <!-- Optional JS scripts (provided by Bootstrap) -->

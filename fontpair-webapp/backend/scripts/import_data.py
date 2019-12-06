@@ -2,8 +2,6 @@ import csv, os
 from fonts.models import *
 from families.models import *
 from categories.models import *
-# from import_export import fields, resources
-# from import_export.widgets import ForeignKeyWidget
 
 # Import data from individual CSV files
 
@@ -26,18 +24,6 @@ def run():
 
     # Import fonts
     with open('data/cleaned_data_gf.csv') as csvfile_fonts:
-        # WEIGHTS = {
-        #     'thin': 'Thin',
-        #     'extralight': 'Extra Light',
-        #     'light': 'Light',
-        #     'regular': 'Regular',
-        #     'medium': 'Medium',
-        #     'semibold': 'Semi Bold',
-        #     'bold': 'Bold',
-        #     'extrabold': 'Extra Bold',
-        #     'black': 'Black',
-        # }
-
         reader = csv.DictReader(csvfile_fonts)
         for row in reader:
             f = Font(name=row['name'],

@@ -1,29 +1,36 @@
 .welcome{
     text-align: center;
-    background: yellow;
+    max-width: 90%;
 }
 
 .welcome, .texteditor{
     padding-top: 1em;
     padding-bottom: 1em;
+    margin: auto;
 }
 
 div .texteditor{
-    margin: auto;
-/*        padding-left: 2em;
-    padding-right: 2em;*/
     max-width: 850px;
     text-align: justify;
+    margin-bottom: 3em;
 }
 
-h1, h4, p .texteditor{
-    padding-bottom: 1em;
+div .texteditor:focus{
+    outline: none;
+}
+
+h1, h, p .texteditor{
+    /*padding-bottom: 1em;*/
 }
 
 p .texteditor{
     line-height: 2;
 }
 
-button{
+button.rand-combo{
     text-align:center;
+    margin:auto!important;
+    display:block!important;
+    padding: 1em;
+    margin-bottom: 3em;
 }

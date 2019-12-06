@@ -32,7 +32,10 @@
                   {% endif %}">{{ font.name }}</td>
             <td>{{ font.category.name }}</td>
             <!-- Generate random sentences instead? -->
-            <td class = "{{ font.name }}" contenteditable="true" style="font-family: {{ font.family.name }};"><div class="texteditor">Edit this sentence!</div></td>
+            <td class = "{{ font.name }}" contenteditable="true" style="font-family: {{ font.family.name }}; font-weight: {{ font.weight_num  }};
+                  {% if font.is_italic %}
+                    font-style: italic;
+                  {% endif %}"><div class="texteditor">Edit this sentence!</div></td>
             <td><a href="{% url 'font_detail' font.pk %}"class="btn btn-primary">Details</a></td>
         </tr>
         {% endfor %}
@@ -93,56 +96,4 @@
 {% endif %}
 <!-- End pagination -->
 
-
-
-
-<!-- {% if fonts.has_other_pages %}
-  <div class="pagination">
-    {% if fonts.has_previous %}
-        <a class="pagination-action" href="?page=1">
-         <span><<</span>
-        </a>
-        <a class="pagination-action" href="?page={{ fonts.previous_page_number }}">
-          <span><</span>
-        </a>
-    {% endif %}
-
-      {% for num in fonts.paginator.page_range %}
-
-        {% if fonts.number == num %}
-        <span class="pagination-number pagination-current">{{ num }}</span>
-        {% elif num > fonts.number|add:'-10' and num < fonts.number|add:'10' %}
-        <a class="pagination-number" href="?page={{ num }}">{{ num }}</a>
-        {% endif %}
-
-      {% endfor %}
-
-      {% if fonts.has_next %}
-        <a class="pagination-action" href="?page={{ fonts.next_page_number }}">
-          <span>></span>
-        </a>
-        <a class="pagination-action" href="?page={{ fonts.paginator.num_pages }}">
-          <span>>></span>
-        </a>
-      {% endif %}
-  </div>
-{% endif %} -->
-
-<!-- <div class="row" id="example">
-{% for font in fonts %}
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family={{ font.family }}">
-    <div class="col-md-4">
-        <div class="card mb-2">
-            <div class="card-body">
-                <h5 class="card-title" style="font-family: {{ font.family }}">{{ font.name }}</h5>
-                <p class="card-text">{{ font.category }}</p>
-                <a href="{% url 'font_detail' font.pk %}"
-                   class="btn btn-primary">
-                    Details
-                </a>
-            </div>
-        </div>
-    </div>
-    {% endfor %}
-</div> -->
 {% endblock %}

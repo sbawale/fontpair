@@ -2,6 +2,8 @@ from django.shortcuts import render
 from rest_framework import viewsets, filters
 from .models import *
 from .serializers import *
+from families.models import *
+from fonts.models import *
 
 # Create your views here.
 
@@ -18,10 +20,16 @@ def categories(request):
     }
     return render(request, 'categories.html', context)
 
-def category(request, cat):
+def category(request, pk):
     # Use lists of families instead
-    categories = Category.objects.filter(name=cat)
+    category = Category.objects.filter(pk=pk)
+    families = Family.objects.filter(category__pk=pk)
+    num_families = len(families)
+    last_family = families[num_families-1]
     context = {
-        "categories": categories
+        "category": category,
+        "families": families,
+        "num_families": num_families,
+        "last_family": last_family
     }
     return render(request, "category.html", context)

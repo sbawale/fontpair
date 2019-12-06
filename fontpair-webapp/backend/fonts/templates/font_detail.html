@@ -2,34 +2,15 @@
 {% load static %}
 
 {% block page_content %}
-<link rel="stylesheet" href="{% static 'css/font_detail.css' %}">
+<link rel="stylesheet" href="{% static 'css/detail_page.css' %}">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family={{ font.family }}">
 
 <style type="text/css">
-    .col-md-4{
-        margin-right: 2em;
-    }
     h1, .texteditor{
         font-family: {{ font.family.name }};
         font-weight: {{ font.weight_num }};
         font-style: {{ style }};
         min-width: 600px;
-    }
-
-    .recommendations {
-        min-with: 800px;
-    }
-
-    div .texteditor:focus{
-        outline: none;
-    }
-
-    a:hover {
-        text-decoration: none;
-    }
-
-    h5 {
-        margin-bottom: 1em;
     }
 </style>
 

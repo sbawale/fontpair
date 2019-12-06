@@ -32,15 +32,15 @@ def get_unlabeled_families(filename):
 
     return families, serifs
 
-def get_unique_strings(dataset,feature_index):
-    unique = []
-    for font in dataset.itertuples(index=False,name=None):
-        # Split current value into individual words based on whitespace
-        feature = font[feature_index].split()
-        for word in feature:
-            if word not in unique:
-                unique.append(word)
-    return unique
+# def get_unique_strings(dataset,feature_index):
+#     unique = []
+#     for font in dataset.itertuples(index=False,name=None):
+#         # Split current value into individual words based on whitespace
+#         feature = font[feature_index].split()
+#         for word in feature:
+#             if word not in unique:
+#                 unique.append(word)
+#     return unique
 
 def run():
     # Initialize font list, column/feature names, array of font weights, and get ambiguous families
@@ -66,9 +66,9 @@ def run():
             # Initialize feature variables
             name = ""
             family = font['family'].strip()
-            category = font['category'].strip()
-            is_body = int(category != 'display')
-            is_serif = check_if_serif(family.lower(),category)
+            category = font['category'].strip().title()
+            is_body = int(font['category'] != 'display')
+            is_serif = check_if_serif(family.lower(),category.lower())
             is_italic = 0 # default is 0: roman/not italic
             weight_num = 400 # default is 400: regular
             weight_str = 'Regular'
@@ -78,8 +78,9 @@ def run():
             if is_serif == -1:
                 for i, f in enumerate(families):
                     if f == family:
+                        # print('serifs[i]: ',serifs[i])
                         is_serif = serifs[i]
-
+            # print('is_serif: ',is_serif)
             # Check for font variants
             variants = font['variants']
             if len(variants) > 1:

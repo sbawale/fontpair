@@ -2,34 +2,13 @@
 {% load static %}
 
 {% block page_content %}
-<link rel="stylesheet" href="{% static 'css/font_detail.css' %}">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family={{ family }}">
+<link rel="stylesheet" href="{% static 'css/detail_page.css' %}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family={{ family.name }}">
 
 <style type="text/css">
-    .col-md-4{
-        margin-right: 2em;
-    }
     h1, .texteditor{
-        font-family: {{ font.family.name }};
-        font-weight: {{ font.weight_num }};
-        font-style: {{ style }};
+        font-family: {{ family.name }};
         min-width: 600px;
-    }
-
-    .recommendations {
-        min-with: 800px;
-    }
-
-    div .texteditor:focus{
-        outline: none;
-    }
-
-    a:hover {
-        text-decoration: none;
-    }
-
-    h5 {
-        margin-bottom: 1em;
     }
 </style>
 
@@ -38,15 +17,19 @@
 <div class="row">
     <div class="col-md-4">
         <br>
-        <h5>Family:</h5>
-        <p><a href="{% url 'font_family' font.family.pk %}">{{ font.family.name }}</a></p>
-        <h5>Category:</h5>
-        <p><a href="{% url 'font_category' font.category.pk %}">{{ font.category.name }}</a></p>
-        <h5>Weight:</h5>
-        <p>{{ font.weight_str }}</p>
-        <br>
-
         <button class="gf-link btn btn-outline-primary" a href={{ family.url }}>See on Google Fonts</button>
+        <br><br>
+        <h5>Category:</h5>
+            <p><a href="{% url 'category' family.category.pk %}">{{ family.category.name }}</a></p>
+        <h5>Variants:</h5>
+            {% for font in fonts %}
+                <a href="{% url 'font_detail' font.pk %}">{{ font.name }}</a>
+                {% if num_fonts != 1 %}
+                    {% if font != last_font %}
+                        | <!-- add separator symbol if not last element -->
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
     </div>
     <div class="col-md-4">
         <br>

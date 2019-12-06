@@ -28,11 +28,15 @@ def families(request):
     }
     return render(request, 'families.html', context)
 
-def family(request, fam):
-    # fonts = Font.objects.filter(
-    #     family__name__contains=family).order_by('name')
-    family = Family.objects.get(pk=fam)
+def family(request, pk):
+    family = Family.objects.get(pk=pk)
+    fonts = Font.objects.filter(family__pk=pk)
+    num_fonts = len(fonts)
+    last_font = fonts[num_fonts-1]
     context = {
         "family": family,
+        "fonts": fonts,
+        "num_fonts": num_fonts,
+        "last_font": last_font
     }
     return render(request, "family.html", context)

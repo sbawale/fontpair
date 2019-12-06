@@ -1,3 +1,0 @@
-mv fontpair_app/manage.py ./
-mv fontpair_app/fontpair_app/* fontpair_app
-rm -r fontpair_app/fontpair_app/

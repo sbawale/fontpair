@@ -1,20 +1,52 @@
 {% extends "base.html" %}
+{% load static %}
+
 {% block page_content %}
-<div class="col-md-8 offset-md-2">
-    <h1>{{ category | name }}</h1>
-    <hr>
-    {% for font in fonts %}
-        <h2><a href="{% url 'font_detail' font.pk%}">{{ font.name }}</a></h2>
-        <small>
-            {{ font.created_on.date }} |&nbsp;
-            Categories:&nbsp;
-            {% for category in font.categories.all %}
-            <a href="{% url 'font_category' category.name %}">
-                {{ category.name }}
-            </a>&nbsp;
+<link rel="stylesheet" href="{% static 'css/detail_page.css' %}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family={{ family.name }}">
+
+<style type="text/css">
+    h1, .texteditor{
+        /*font-family: {{ family.name }};*/
+        min-width: 600px;
+    }
+</style>
+
+<br>
+<h1>{{ category.name }}</h1>
+<div class="row">
+    <div class="col-md-4">
+        <br>
+        <button class="gf-link btn btn-outline-primary" a href="https://fonts.google.com/?category= {{ category.name }}">See on Google Fonts</button>
+        <br><br>
+        <h5>Families:</h5>
+            {% for family in families %}
+                <a href="{% url 'family' family.pk %}">{{ family.name }}</a>
+                {% if num_families != 1 %}
+                    {% if family != last_family %}
+                        | <!-- add separator symbol if not last element -->
+                    {% endif %}
+                {% endif %}
             {% endfor %}
-        </small>
-        <!-- <p>{{ post.body | slice:":400" }}...</p> -->
-    {% endfor %}
+    </div>
+    <div class="col-md-4">
+        <br>
+        <div contenteditable="true" class="texteditor">
+            <h3>Sample text in this font.</h3>
+            <br>
+            <p>The quick brown fox jumps over the lazy dog</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        </div>
+    </div>
 </div>
+<br><br>
+<div class="row recommendations">
+    <div class="col-md-4">
+
+    </div>
+    <div class="col-md-4">
+
+    </div>
+</div>
+<br><br><br>
 {% endblock %}

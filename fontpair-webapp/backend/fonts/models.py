@@ -27,14 +27,6 @@ class Font(models.Model):
     def __str_(self):
         return name
 
-    # def get_family(self):
-    #     family_obj = models_fam.Family.objects.get(pk=self.family)
-    #     return family_obj
-
-    # def get_category(self):
-    #     category_obj = models_cat.Category.objects.get(pk=self.category)
-    #     return category_obj
-
     def get_random(self, items=1):
         if isinstance(items, int):
             return self.model.objects.order_by('?')[:items]
