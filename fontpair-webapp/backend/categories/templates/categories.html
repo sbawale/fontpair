@@ -4,19 +4,15 @@
 
 <h1>Categories</h1>
 <br>
-<div class="row">
-{% for category in categories %}
-    <div class="col-md-4">
-        <div class="card mb-2">
-            <div class="card-body">
-                <h5 class="card-title">{{ category.name }}</h5>
-                <p class="card-text">category description</p>
-                <a href="{% url 'category' category.pk %}"class="btn btn-primary">Fonts</a>
-            </div>
-        </div>
-    </div>
-    {% endfor %}
-</div>
+<table id="category_list" style="margin:auto; text-align: center;">
+    <tbody>
+        {% for category in categories %}
+        <tr style="display:inline;">
+            <td><a href="{% url 'category' category.pk %}" class="btn btn-primary" style="width: 250px; padding: 2.5em; margin: 1em;"><h4>{{ category.name }}</h4></a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}
 
 <!-- Begin pagination -->

@@ -35,7 +35,7 @@
             <td class = "{{ font.name }}" contenteditable="true" style="font-family: {{ font.family.name }}; font-weight: {{ font.weight_num  }};
                   {% if font.is_italic %}
                     font-style: italic;
-                  {% endif %}"><div class="texteditor">Edit this sentence!</div></td>
+                  {% endif %}"><div contenteditable="true" class="smalleditor">Edit this sentence!</div></td>
             <td><a href="{% url 'font_detail' font.pk %}"class="btn btn-primary">Details</a></td>
         </tr>
         {% endfor %}

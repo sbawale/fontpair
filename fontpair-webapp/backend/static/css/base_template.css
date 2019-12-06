@@ -1,3 +1,38 @@
 a:hover {
     text-decoration: none;
 }
+
+ul li {
+    list-style: none;
+}
+
+div.texteditor{
+    background: #efefef;
+    padding: 3em;
+    text-align: justify;
+}
+
+form:focus{
+    outline: none;
+}
+
+div.texteditor:focus{
+    outline: none;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.content {
+  flex: 1 0 auto;
+}
+
+.footer {
+    /*position: absolute;*/
+    bottom: 0;
+    width: 100%;
+    /*flex-shrink: 0;*/
+}

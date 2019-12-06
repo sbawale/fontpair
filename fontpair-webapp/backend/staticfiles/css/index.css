@@ -1,6 +1,6 @@
 .welcome{
     text-align: center;
-    max-width: 90%;
+    /*max-width: 90%;*/
 }
 
 .welcome, .texteditor{
@@ -11,8 +11,8 @@
 
 div .texteditor{
     max-width: 850px;
-    text-align: justify;
     margin-bottom: 3em;
+    background: #efefef;
 }
 
 div .texteditor:focus{

@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework import viewsets, filters
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import *
 from .serializers import *
 from families.models import *
@@ -14,22 +15,35 @@ class CategoryAPI(viewsets.ModelViewSet):
     search_fields = ['name']
 
 def categories(request):
-    categories = Category.objects.all().order_by('name')
+    category_list = Category.objects.all().order_by('name')
+    page = request.GET.get('page', 1)
+    paginator = Paginator(category_list, 10)
+
+    try:
+        categories = paginator.page(page)
+    except PageNotAnInteger:
+        categories = paginator.page(1)
+    except EmptyPage:
+        categories = paginator.page(paginator.num_pages)
     context = {
         'categories': categories
     }
     return render(request, 'categories.html', context)
 
 def category(request, pk):
-    # Use lists of families instead
     category = Category.objects.get(pk=pk)
-    families = Family.objects.filter(category__pk=pk)
-    num_families = len(families)
-    last_family = families[num_families-1]
+    family_list = Family.objects.filter(category__pk=pk)
+    page = request.GET.get('page', 1)
+    paginator = Paginator(family_list, 20)
+
+    try:
+        families = paginator.page(page)
+    except PageNotAnInteger:
+        families = paginator.page(1)
+    except EmptyPage:
+        families = paginator.page(paginator.num_pages)
     context = {
         "category": category,
-        "families": families,
-        "num_families": num_families,
-        "last_family": last_family
+        "families": families
     }
-    return render(request, "category.html", context)
+    return render(request, 'category.html', context)

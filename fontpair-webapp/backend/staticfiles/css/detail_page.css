@@ -1,6 +1,7 @@
 .col-md-4{
-    margin-right: 2em;
+    /*margin-right: 2em;*/
 }
+
 h1, .texteditor{
     min-width: 600px;
 }
@@ -9,9 +10,23 @@ div.recommendations {
     min-with: 800px;
 }
 
-div .texteditor:focus{
-    outline: none;
+ul li.recommendations{
+    list-style: circle;
 }
+
+div.smalleditor {
+    background: #efefef;
+    padding: 0.5em;
+}
+
+/*div.texteditor{
+    background: #efefef;
+    padding: 3em;
+}
+
+div.texteditor:focus{
+    outline: none;
+}*/
 
 h5 {
     margin-bottom: 1em;
