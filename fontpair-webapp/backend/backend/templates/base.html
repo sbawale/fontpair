@@ -82,19 +82,20 @@ for (var i = 0; i < btns.length; i++) {
 <footer class="footer">
   <nav class="navbar static-bottom navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-      <a class="navbar-brand" href="#">Speed Dating for Fonts</a>
+      <a class="navbar-brand" href="#">SDFF</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link" href="#">About<span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="{% url 'about' %}">About<span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">GitHub Repo</a>
+            <a class="nav-link" href="https://github.com/sbawale/fontpair">GitHub Repo</a>
           </li>
         </ul>
+        <div class="footer-copyright text-right" style="color: #989B9E;">© 2019 Copyright Sara Bawale</div>
       </div>
     </div>
   </nav>

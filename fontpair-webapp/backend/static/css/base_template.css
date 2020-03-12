@@ -12,8 +12,9 @@ div.texteditor{
     text-align: justify;
 }
 
-form:focus{
+.form-control:focus{
     outline: none;
+    box-shadow: none;
 }
 
 div.texteditor:focus{

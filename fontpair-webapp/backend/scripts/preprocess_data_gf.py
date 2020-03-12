@@ -1,7 +1,6 @@
 import json, urllib.request, re, csv, os
 import pandas as pd
 import numpy as np
-from contextlib import closing
 
 def check_if_serif(family,category):
     if category == 'serif' or 'serif' in family:

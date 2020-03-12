@@ -31,6 +31,7 @@ router.register(r'categories', category_views.CategoryAPI, 'categories')
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('about/', views.about, name='about'),
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     path('fonts/', include('fonts.urls')),
